@@ -2,20 +2,23 @@ package ru.konovalovartyom.crazymachine;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Interpolation;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 
-public class GrabAndDropActor extends Actor{
+import java.util.Map;
+
+public class DragAndDropActor extends Actor{
 
     private float grabOffsetX;
     private float grabOffsetY;
     private TextureRegion textureRegion;
-    public GrabAndDropActor(TextureRegion textureRegion) {
-        this.textureRegion = textureRegion;
+
+    private ThingTypeEnum thingTypeEnum;
+    public DragAndDropActor(Map<ThingTypeEnum, TextureRegion> textureRegionMap, ThingTypeEnum thingTypeEnum, InventoryActor inventory) {
+        this.thingTypeEnum = thingTypeEnum;
+        this.textureRegion = textureRegionMap.get(thingTypeEnum);
         setWidth(textureRegion.getRegionWidth());
         setHeight(textureRegion.getRegionHeight());
         setPosition(100, 100);
@@ -42,6 +45,9 @@ public class GrabAndDropActor extends Actor{
                 public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                     addAction(Actions.scaleTo(1.00f, 1.00f, 0.25f));
                     super.touchUp(event, x, y, pointer, button);
+                    if(getX() > inventory.getX()){
+                        inventory.addItem(DragAndDropActor.this);
+                    }
                 }
             }
         );

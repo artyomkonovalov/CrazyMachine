@@ -9,7 +9,7 @@ import java.util.Iterator;
 import java.util.List;
 
 public class InventoryActor extends Actor {
-    private List<GrabAndDropActor> items = new ArrayList<>();
+    private List<DragAndDropActor> items = new ArrayList<>();
 
     private final Texture background;
     private final int space = 10;
@@ -24,14 +24,14 @@ public class InventoryActor extends Actor {
         this.childWidth = childWidth;
     }
 
-    public void addItems(List<GrabAndDropActor> actors) {
+    public void addItems(List<DragAndDropActor> actors) {
         if(!actors.isEmpty()) {
             items = actors;
             reorganization();
         }
     }
 
-    public void addItem(GrabAndDropActor actor) {
+    public void addItem(DragAndDropActor actor) {
         if (!items.contains(actor)){
             items.add(actor);
             reorganization();
@@ -51,9 +51,9 @@ public class InventoryActor extends Actor {
     @Override
     public void act(float delta) {
         super.act(delta);
-        Iterator<GrabAndDropActor> iterator = items.iterator();
+        Iterator<DragAndDropActor> iterator = items.iterator();
         while (iterator.hasNext()) {
-            GrabAndDropActor item = iterator.next();
+            DragAndDropActor item = iterator.next();
             if (item.getRight() < getX()) {
                 iterator.remove();
                 reorganization();
