@@ -2,8 +2,11 @@ package ru.konovalovartyom.crazymachine;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
@@ -13,6 +16,9 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
+
+import net.dermetfan.gdx.physics.box2d.PositionController;
+
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
@@ -20,15 +26,22 @@ import java.util.Map;
 
 
 /** First screen of the application. Displayed after the application is created. */
-public class FirstScreen implements Screen {
-    private MainGame game = new MainGame();
+public class FirstScreen implements Screen, RotateListener{
+    private final MainGame game;
     private Stage stage;
-
+    private ShapeRenderer shapeRenderer = new ShapeRenderer();
     private Map<ThingTypeEnum, TextureRegion> textureMap;
 
-    private ArrayList<DragAndDropActor> elements = new ArrayList<>();
+    private List<DragAndDropActor> elements = new ArrayList<>();
 
     private Viewport viewport;
+
+    public FirstScreen(MainGame game){
+        this.game = game;
+    }
+    public DragAndDropActor isSelected;
+    private Group buttons;
+
     @Override
     public void show() {
         viewport = new FitViewport(MainGame.SCREEN_WIDTH, MainGame.SCREEN_HEIGHT);
@@ -77,30 +90,54 @@ public class FirstScreen implements Screen {
             public void clicked(InputEvent event, float x, float y) {
                 PlayScreen playScreen = new PlayScreen(elements);
                 game.setScreen(playScreen);
-                stage.dispose();
+                dispose();
             }
         });
 
         List<DragAndDropActor> list = new ArrayList<>();
         for(int i = 0; i < 5; ++i){
-            DragAndDropActor ball = new DragAndDropActor(textureMap, ThingTypeEnum.BALL, inventoryActor);
+            DragAndDropActor ball = new DragAndDropActor(textureMap, ThingTypeEnum.BALL, inventoryActor, elements, this);
             stage.addActor(ball);
             list.add(ball);
-            stage.addActor(ball);
         }
+        DragAndDropActor deskActor = new DragAndDropActor(textureMap, ThingTypeEnum.DESK, inventoryActor, elements, this);
+        stage.addActor(deskActor);
+
+        DragAndDropActor balloon = new DragAndDropActor(textureMap, ThingTypeEnum.BALLOON, inventoryActor, elements, this);
+        stage.addActor(balloon);
+
         inventoryActor.addItems(list);
+        inventoryActor.addItem(deskActor);
+        for(int i = 0; i < 3; ++i){
+            DragAndDropActor pushpin = new DragAndDropActor(textureMap, ThingTypeEnum.PUSHPIN, inventoryActor, elements, this);
+            stage.addActor(pushpin);
+            inventoryActor.addItem(pushpin);
+        }
+
+        buttons = new RotateButtonsActor(this);
+        stage.addActor(buttons);
+        buttons.setVisible(false);
     }
 
     private Map<ThingTypeEnum, TextureRegion> createTextureMap(){
         EnumMap<ThingTypeEnum, TextureRegion> textureMap = new EnumMap<>(ThingTypeEnum.class);
         //HashMap<ThingTypeEnum, TextureRegion> textureMap = new HashMap<>();
         textureMap.put(ThingTypeEnum.BALL, new TextureRegion(new Texture("Textures/football.png")));
+        textureMap.put(ThingTypeEnum.DESK, new TextureRegion(new Texture("Textures/desk.jpg")));
+        textureMap.put(ThingTypeEnum.PUSHPIN, new TextureRegion(new Texture("Textures/pushpin.png")));
+        textureMap.put(ThingTypeEnum.BALLOON, new TextureRegion(new Texture("Textures/balloon.png")));
         return textureMap;
     }
 
     @Override
     public void render(float delta) {
-        ScreenUtils.clear(0, 0, 0, 1);
+        ScreenUtils.clear(Color.CLEAR);
+        if(isSelected != null && isSelected.thingTypeEnum == ThingTypeEnum.DESK){
+            buttons.setVisible(true);
+            buttons.setPosition(isSelected.getX()-buttons.getWidth()-5, isSelected.getY());
+        } else{
+            buttons.setVisible(false);
+        }
         stage.act();
         stage.draw();
     }
@@ -151,6 +188,27 @@ public class FirstScreen implements Screen {
 
     @Override
     public void dispose() {
-        // Destroy screen's assets here.
+        stage.dispose();
+    }
+
+    @Override
+    public void rotate(float degree) {
+        if (isSelected != null){
+            isSelected.setRotation(isSelected.getRotation() + degree);
+        }
+    }
+    public void drawFinishLine() {
+         DragAndDropActor prev = null;
+         for(DragAndDropActor element:elements){
+             if(element.thingTypeEnum == ThingTypeEnum.PUSHPIN){
+                 if(prev != null){
+                     shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+                     shapeRenderer.setColor(1, 0, 0, 1); // Red line
+                     shapeRenderer.line(prev.getX(), prev.getY(), element.getX(), element.getY());
+                     shapeRenderer.end();
+                 }
+                 prev = element;
+             }
+         }
     }
 }
