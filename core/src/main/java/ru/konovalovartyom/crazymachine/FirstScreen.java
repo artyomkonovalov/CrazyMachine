@@ -9,18 +9,18 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
-
-import net.dermetfan.gdx.physics.box2d.PositionController;
-
 import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -29,11 +29,12 @@ import java.util.Map;
 public class FirstScreen implements Screen, RotateListener{
     private final MainGame game;
     private Stage stage;
-    private ShapeRenderer shapeRenderer = new ShapeRenderer();
+    private final ShapeRenderer shapeRenderer = new ShapeRenderer();
     private Map<ThingTypeEnum, TextureRegion> textureMap;
 
-    private List<DragAndDropActor> elements = new ArrayList<>();
+//    private List<DragAndDropActor> elements = new ArrayList<>();
 
+    private LinkedHashSet<DragAndDropActor> elements = new LinkedHashSet<>();
     private Viewport viewport;
 
     public FirstScreen(MainGame game){
@@ -41,6 +42,7 @@ public class FirstScreen implements Screen, RotateListener{
     }
     public DragAndDropActor isSelected;
     private Group buttons;
+    private CheckBox checkBox;
 
     @Override
     public void show() {
@@ -56,10 +58,44 @@ public class FirstScreen implements Screen, RotateListener{
         InventoryActor inventoryActor = new InventoryActor(1040, 0, 240, 720, 200, 200);
         stage.addActor(inventoryActor);
 
+        List<DragAndDropActor> list = new ArrayList<>();
+        for(int i = 0; i < 5; ++i){
+            DragAndDropActor ball = new DragAndDropActor(textureMap, ThingTypeEnum.BALL, inventoryActor, elements, this);
+            stage.addActor(ball);
+            list.add(ball);
+        }
+        for(int i = 0; i < 3; ++i){
+            DragAndDropActor deskActor = new DragAndDropActor(textureMap, ThingTypeEnum.DESK, inventoryActor, elements, this);
+            stage.addActor(deskActor);
+            inventoryActor.addItem(deskActor);
+        }
 
-        /**GrabAndDropActor ball = new GrabAndDropActor(new TextureRegion(new Texture("Textures/football.png")));
-         stage.addActor(ball); */
+        DragAndDropActor balloon = new DragAndDropActor(textureMap, ThingTypeEnum.BALLOON, inventoryActor, elements, this);
+        stage.addActor(balloon);
+        inventoryActor.addItem(balloon);
 
+        inventoryActor.addItems(list);
+        for(int i = 0; i < 3; ++i){
+            DragAndDropActor pushpin = new DragAndDropActor(textureMap, ThingTypeEnum.PUSHPIN, inventoryActor, elements, this);
+            stage.addActor(pushpin);
+            inventoryActor.addItem(pushpin);
+        }
+
+        buttons = new RotateButtonsActor(this);
+        stage.addActor(buttons);
+        buttons.setVisible(false);
+
+        checkBox = new CheckBox("Need to win?", new Skin(Gdx.files.internal("ui/uiskin.json")));
+        checkBox.setChecked(false);
+        stage.addActor(checkBox);
+        checkBox.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if(isSelected != null){
+                    isSelected.NeedToWin = ! isSelected.NeedToWin;
+                }
+            }
+        });
         ImageButton upButton = createButton("up");
         upButton.setHeight(upButton.getHeight()/1.5F);
         upButton.setPosition(inventoryActor.getX() + (inventoryActor.getWidth()-upButton.getWidth())/2, inventoryActor.getHeight()-upButton.getHeight());
@@ -93,37 +129,13 @@ public class FirstScreen implements Screen, RotateListener{
                 dispose();
             }
         });
-
-        List<DragAndDropActor> list = new ArrayList<>();
-        for(int i = 0; i < 5; ++i){
-            DragAndDropActor ball = new DragAndDropActor(textureMap, ThingTypeEnum.BALL, inventoryActor, elements, this);
-            stage.addActor(ball);
-            list.add(ball);
-        }
-        DragAndDropActor deskActor = new DragAndDropActor(textureMap, ThingTypeEnum.DESK, inventoryActor, elements, this);
-        stage.addActor(deskActor);
-
-        DragAndDropActor balloon = new DragAndDropActor(textureMap, ThingTypeEnum.BALLOON, inventoryActor, elements, this);
-        stage.addActor(balloon);
-
-        inventoryActor.addItems(list);
-        inventoryActor.addItem(deskActor);
-        for(int i = 0; i < 3; ++i){
-            DragAndDropActor pushpin = new DragAndDropActor(textureMap, ThingTypeEnum.PUSHPIN, inventoryActor, elements, this);
-            stage.addActor(pushpin);
-            inventoryActor.addItem(pushpin);
-        }
-
-        buttons = new RotateButtonsActor(this);
-        stage.addActor(buttons);
-        buttons.setVisible(false);
     }
 
     private Map<ThingTypeEnum, TextureRegion> createTextureMap(){
         EnumMap<ThingTypeEnum, TextureRegion> textureMap = new EnumMap<>(ThingTypeEnum.class);
         //HashMap<ThingTypeEnum, TextureRegion> textureMap = new HashMap<>();
         textureMap.put(ThingTypeEnum.BALL, new TextureRegion(new Texture("Textures/football.png")));
-        textureMap.put(ThingTypeEnum.DESK, new TextureRegion(new Texture("Textures/desk.jpg")));
+        textureMap.put(ThingTypeEnum.DESK, new TextureRegion(new Texture("Textures/desk1.png")));
         textureMap.put(ThingTypeEnum.PUSHPIN, new TextureRegion(new Texture("Textures/pushpin.png")));
         textureMap.put(ThingTypeEnum.BALLOON, new TextureRegion(new Texture("Textures/balloon.png")));
         return textureMap;
@@ -133,13 +145,34 @@ public class FirstScreen implements Screen, RotateListener{
     public void render(float delta) {
         ScreenUtils.clear(Color.CLEAR);
         if(isSelected != null && isSelected.thingTypeEnum == ThingTypeEnum.DESK){
-            buttons.setVisible(true);
+            buttons.setVisible(isSelected.isVisible());
             buttons.setPosition(isSelected.getX()-buttons.getWidth()-5, isSelected.getY());
         } else{
             buttons.setVisible(false);
         }
+        if(isSelected != null && isSelected.thingTypeEnum == ThingTypeEnum.BALL){
+            checkBox.setVisible(isSelected.isVisible());
+            checkBox.setPosition(isSelected.getX()+isSelected.getWidth(), isSelected.getY()+isSelected.getHeight());
+            checkBox.setChecked(isSelected.NeedToWin);
+        } else{
+            checkBox.setVisible(false);
+        }
         stage.act();
         stage.draw();
+
+
+        DragAndDropActor prev = null;
+        for(DragAndDropActor element:elements){
+            if(element.thingTypeEnum == ThingTypeEnum.PUSHPIN){
+                if(prev != null){
+                    shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+                    shapeRenderer.setColor(1, 0, 0, 1); // Red line
+                    shapeRenderer.rectLine(prev.getX(), prev.getY(), element.getX(), element.getY(), 10);
+                    shapeRenderer.end();
+                }
+                prev = element;
+            }
+        }
     }
 
     private ImageButton createButton(String typeButton){
@@ -197,18 +230,5 @@ public class FirstScreen implements Screen, RotateListener{
             isSelected.setRotation(isSelected.getRotation() + degree);
         }
     }
-    public void drawFinishLine() {
-         DragAndDropActor prev = null;
-         for(DragAndDropActor element:elements){
-             if(element.thingTypeEnum == ThingTypeEnum.PUSHPIN){
-                 if(prev != null){
-                     shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-                     shapeRenderer.setColor(1, 0, 0, 1); // Red line
-                     shapeRenderer.line(prev.getX(), prev.getY(), element.getX(), element.getY());
-                     shapeRenderer.end();
-                 }
-                 prev = element;
-             }
-         }
-    }
 }
+

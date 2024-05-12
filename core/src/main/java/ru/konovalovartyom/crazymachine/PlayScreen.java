@@ -22,7 +22,9 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class PlayScreen implements Screen {
 
@@ -33,9 +35,9 @@ public class PlayScreen implements Screen {
     private World world;
     private Box2DDebugRenderer debugRenderer;
     private OrthographicCamera camera;
-    private final List<DragAndDropActor> elements;
+    private final Set<DragAndDropActor> elements;
 
-    public PlayScreen(List<DragAndDropActor> elements) {
+    public PlayScreen(Set<DragAndDropActor> elements) {
         this.elements = elements;
     }
 
@@ -117,6 +119,8 @@ public class PlayScreen implements Screen {
         fixtureDef.restitution = 0f;
         Fixture fixture = body.createFixture(fixtureDef);
         shape.dispose();
+
+        body.setUserData(ThingTypeEnum.DESK);
     }
 
     private void createBalloon(DragAndDropActor element){
@@ -221,7 +225,7 @@ public class PlayScreen implements Screen {
 
         @Override
         public void postSolve(Contact contact, ContactImpulse impulse) {
-
+//            contact.getFixtureA().getBody()
         }
     }
 }

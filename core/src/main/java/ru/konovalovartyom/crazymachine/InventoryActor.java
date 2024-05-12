@@ -13,21 +13,21 @@ public class InventoryActor extends Actor {
 
     private final Texture background;
     private final int space = 10;
-
-    private final float childHeight;
+    private final int step = 50;
+    private final float childHeight = 75;
     private final float childWidth;
 
     public InventoryActor(float x, float y, int width, int height, float childWidth, float childHeight) {
         setBounds(x, y, width, height);
-        background = new Texture("Textures/Inventory.jpg");
-        this.childHeight = childHeight;
+        background = new Texture("Textures/Inventory.png");
         this.childWidth = childWidth;
     }
 
     public void addItems(List<DragAndDropActor> actors) {
         if(!actors.isEmpty()) {
-            items = actors;
-            reorganization();
+            for(DragAndDropActor item:actors){
+                addItem(item);
+            }
         }
     }
 
@@ -39,7 +39,7 @@ public class InventoryActor extends Actor {
     }
 
     private void reorganization() {
-        float positionY = getTop();
+        float positionY = getTop()-75;
         float positionX = getX() + (getWidth() / 2F) - childWidth / 2;
 
         for (Actor actor : items) {
@@ -66,20 +66,36 @@ public class InventoryActor extends Actor {
         batch.draw(background, getX(), getY(), getWidth(), getHeight());
     }
 
-    public void toDown() {
-        for (Actor actor : items) {
-            if (getY() + childHeight > getBottom()) {
-                actor.setY(actor.getY() + actor.getHeight() + space / 2F);
+    public void toUp() {
+//        for (Actor actor : items) {
+//            if (getY() + childHeight > getBottom()) {
+//                actor.setY(actor.getY() + actor.getHeight() + space / 2F);
+//            }
+//        }
+        if(!items.isEmpty()){
+            if(items.get(0).getY() > this.getTop() - childHeight){
+                for(Actor actor:items){
+                    actor.setY(actor.getY() - step);
+                    if(actor.getTop() >= 0  && actor.getY() + actor.getHeight()/2 <= this.getTop() - childHeight) actor.setVisible(true);
+                    else actor.setVisible(false);
+                }
             }
         }
     }
 
-    public void toUp() {
+    public void toDown() {
         if (!items.isEmpty()) {
-            Actor firstActor = items.get(0);
-            if (getTop() - childHeight < firstActor.getY()) {
-                for (Actor actor : items) {
-                    actor.setY(actor.getY() - actor.getHeight() - space / 2F);
+//            Actor firstActor = items.get(0);
+//            if (getTop() - childHeight < firstActor.getY()) {
+//                for (Actor actor : items) {
+//                    actor.setY(actor.getY() - actor.getHeight() - space / 2F);
+//                }
+//            }
+            if(items.get(items.size()-1).getY() < 0){
+                for(Actor actor:items){
+                    actor.setY(actor.getY() + step);
+                    if(actor.getTop() >= 0  && actor.getY() + actor.getHeight()/2 <= this.getTop() - childHeight) actor.setVisible(true);
+                    else actor.setVisible(false);
                 }
             }
         }

@@ -6,8 +6,9 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class DragAndDropActor extends Actor {
 
@@ -16,15 +17,14 @@ public class DragAndDropActor extends Actor {
     public TextureRegion textureRegion;
     public FirstScreen screen;
     public ThingTypeEnum thingTypeEnum;
-    public DragAndDropActor(Map<ThingTypeEnum, TextureRegion> textureRegionMap, ThingTypeEnum thingTypeEnum, InventoryActor inventory, List<DragAndDropActor> elements, FirstScreen firstScreen) {
+    public boolean NeedToWin;
+    public DragAndDropActor(Map<ThingTypeEnum, TextureRegion> textureRegionMap, ThingTypeEnum thingTypeEnum, InventoryActor inventory, Set<DragAndDropActor> elements, FirstScreen firstScreen) {
         this.screen = firstScreen;
         this.thingTypeEnum = thingTypeEnum;
         this.textureRegion = textureRegionMap.get(thingTypeEnum);
         setWidth(textureRegion.getRegionWidth());
         setHeight(textureRegion.getRegionHeight());
         setOrigin(getWidth()/2, getHeight()/2);
-        // setPosition(100, 100);
-
         addListener(
             new InputListener() {
                 @Override
@@ -46,16 +46,13 @@ public class DragAndDropActor extends Actor {
                 @Override
                 public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                     super.touchUp(event, x, y, pointer, button);
-                    if(getX() >= inventory.getX()){
+                    if(getX() + getWidth()/2 >= inventory.getX()){
                         inventory.addItem(DragAndDropActor.this);
                         elements.remove(DragAndDropActor.this);
                     }else {
                         elements.add(DragAndDropActor.this);
                     }
                     screen.isSelected = DragAndDropActor.this;
-                    if(thingTypeEnum == ThingTypeEnum.PUSHPIN){
-                        screen.drawFinishLine();
-                    }
                 }
             }
         );
