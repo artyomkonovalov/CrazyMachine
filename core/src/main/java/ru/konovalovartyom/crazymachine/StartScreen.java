@@ -23,8 +23,8 @@ public class StartScreen implements Screen {
 
     public StartScreen(MainGame game) {
         this.game = game;
-        createLevelScreen = new FirstScreen(game, true);
-        chooseLevelScreen = new ChooseLevelScreen(game);
+        createLevelScreen = new FirstScreen(this, game, true);
+        chooseLevelScreen = new ChooseLevelScreen(game, this);
     }
 
     @Override

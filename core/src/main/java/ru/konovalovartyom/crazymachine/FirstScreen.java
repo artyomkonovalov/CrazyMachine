@@ -33,6 +33,7 @@ import java.util.Map;
 
 /** First screen of the application. Displayed after the application is created. */
 public class FirstScreen implements Screen, RotateListener{
+    private StartScreen startScreen;
     private final MainGame game;
     private Stage stage;
     private final ShapeRenderer shapeRenderer = new ShapeRenderer();
@@ -53,12 +54,14 @@ public class FirstScreen implements Screen, RotateListener{
     private CheckBox toInventory;
 
     //Констркутор для экрана создания уровня
-    public FirstScreen(MainGame game, boolean isCreateLevelScreen){
+    public FirstScreen(StartScreen startScreen, MainGame game, boolean isCreateLevelScreen){
+        this.startScreen = startScreen;
         this.game = game;
         this.isCreateLevelScreen = isCreateLevelScreen;
     }
     //Конструктор для игрового экрана
-    public FirstScreen(MainGame game, boolean isCreateLevelScreen, FileHandle file){
+    public FirstScreen(StartScreen startScreen, MainGame game, boolean isCreateLevelScreen, FileHandle file){
+        this.startScreen = startScreen;
         this.game = game;
         this.isCreateLevelScreen = isCreateLevelScreen;
         this.file = file;
@@ -112,12 +115,27 @@ public class FirstScreen implements Screen, RotateListener{
         startButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                PlayScreen playScreen = new PlayScreen(elements);
+                PlayScreen playScreen = new PlayScreen(elements, FirstScreen.this, startScreen, game);
                 game.setScreen(playScreen);
                 dispose();
             }
         });
 
+        ImageButton.ImageButtonStyle backButtonStyle = new ImageButton.ImageButtonStyle();
+        Texture clockwiseNormal = new Texture("Textures/backbutton_normal(wood).png");
+        Texture clockwiseActive = new Texture("Textures/backbutton_active(wood).png");
+        backButtonStyle.up = new TextureRegionDrawable(clockwiseNormal);
+        backButtonStyle.down = new TextureRegionDrawable(clockwiseActive);
+        ImageButton backButton = new ImageButton(backButtonStyle);
+        backButton.setPosition(0, MainGame.SCREEN_HEIGHT-backButton.getHeight());
+        backButton.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                game.setScreen(startScreen);
+            }
+
+        });
+        stage.addActor(backButton);
         if(isCreateLevelScreen){
             //Интерфейс для редактирования уровня
             ImageButton.ImageButtonStyle saveStyle = new ImageButton.ImageButtonStyle();
@@ -192,6 +210,9 @@ public class FirstScreen implements Screen, RotateListener{
                 actor.setRotation(entry.get("angle").asInt());
                 if(actor.toInventory){
                     inventoryActor.addItem(actor);
+                }
+                else{
+                    elements.add(actor);
                 }
             }
         }

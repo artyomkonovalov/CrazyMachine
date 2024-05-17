@@ -4,10 +4,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
@@ -15,6 +16,7 @@ import java.util.ArrayList;
 
 
 public class ChooseLevelScreen implements Screen {
+    private StartScreen startScreen;
     private final MainGame game;
     private Viewport viewport;
     private Stage stage;
@@ -25,7 +27,8 @@ public class ChooseLevelScreen implements Screen {
     private ArrayList<LevelActor> levels = new ArrayList<>();
 
 
-    public ChooseLevelScreen(MainGame game) {
+    public ChooseLevelScreen(MainGame game, StartScreen startScreen) {
+        this.startScreen = startScreen;
         this.game = game;
     }
 
@@ -37,6 +40,22 @@ public class ChooseLevelScreen implements Screen {
 
         BackgroundActor backgroundActor = new BackgroundActor(new Texture("Textures/levelchoose_background.png"));
         stage.addActor(backgroundActor);
+
+        ImageButton.ImageButtonStyle backButtonStyle = new ImageButton.ImageButtonStyle();
+        Texture clockwiseNormal = new Texture("Textures/backbutton_normal(wood).png");
+        Texture clockwiseActive = new Texture("Textures/backbutton_active(wood).png");
+        backButtonStyle.up = new TextureRegionDrawable(clockwiseNormal);
+        backButtonStyle.down = new TextureRegionDrawable(clockwiseActive);
+        ImageButton backButton = new ImageButton(backButtonStyle);
+        backButton.setPosition(0, MainGame.SCREEN_HEIGHT-backButton.getHeight());
+        backButton.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                game.setScreen(startScreen);
+            }
+
+        });
+        stage.addActor(backButton);
 
         FileHandle[] files = Gdx.files.local("levels/").list();
         for(FileHandle file: files) {
@@ -50,7 +69,7 @@ public class ChooseLevelScreen implements Screen {
             levels.get(i).addListener(new ClickListener(){
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    FirstScreen gameScreen = new FirstScreen(game, false, levels.get(a).getLevelFile());
+                    FirstScreen gameScreen = new FirstScreen(startScreen, game, false, levels.get(a).getLevelFile());
                     game.setScreen(gameScreen);
                     dispose();
                 }

@@ -1,10 +1,11 @@
 package ru.konovalovartyom.crazymachine;
 
-import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -20,59 +21,106 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class PlayScreen implements Screen {
-
+    private MainGame game;
+    private StartScreen startScreen;
+    private FirstScreen firstScreen;
     private static final float PPM = 100;
     private int winCount = 0;
     private int finishedCount = 0;
-    //    float kx = MainGame.SCREEN_WIDTH / PPM;
-//    float ky = MainGame.SCREEN_HEIGHT / PPM;
     private World world;
     private Box2DDebugRenderer debugRenderer;
     private OrthographicCamera camera;
     private final Set<DragAndDropActor> elements;
+    private Array<Body> bodies = new Array<>();
+    private Stage stage;
+    private Viewport viewport;
+    private WinActor winActor;
+    public static final float nextWidth = MainGame.SCREEN_WIDTH/(2*PPM);
+    public static final float nextHeight = MainGame.SCREEN_HEIGHT/(2*PPM);
 
-    public PlayScreen(Set<DragAndDropActor> elements) {
+    public PlayScreen(Set<DragAndDropActor> elements, FirstScreen firstScreen, StartScreen startScreen, MainGame game) {
         this.elements = elements;
+        this.startScreen = startScreen;
+        this.game = game;
+        this.firstScreen = firstScreen;
     }
 
     @Override
     public void show() {
+        viewport = new FitViewport(MainGame.SCREEN_WIDTH, MainGame.SCREEN_HEIGHT);
+        stage = new Stage(viewport);
+        Gdx.input.setInputProcessor(stage);
+
         Box2D.init();
         world = new World(new Vector2(0, -9.8F), true);
         world.setContactListener(new MyContactListener());
-        debugRenderer = new Box2DDebugRenderer();
-        debugRenderer.setDrawVelocities(true);
+//        debugRenderer = new Box2DDebugRenderer();
+//        debugRenderer.setDrawVelocities(true);
+//
+//        camera = new OrthographicCamera(MainGame.SCREEN_WIDTH / PPM, MainGame.SCREEN_HEIGHT / PPM);
+//        camera.position.set( MainGame.SCREEN_WIDTH / (2 * PPM), MainGame.SCREEN_HEIGHT / (2 * PPM), 0);
+//        camera.update();
 
-        camera = new OrthographicCamera(MainGame.SCREEN_WIDTH / PPM, MainGame.SCREEN_HEIGHT / PPM);
-        camera.position.set( MainGame.SCREEN_WIDTH / (2 * PPM), MainGame.SCREEN_HEIGHT / (2 * PPM), 0);
-        camera.update();
+        BackgroundActor backgroundActor = new BackgroundActor(new Texture("Textures/background_gamearea.jpg"));
+        stage.addActor(backgroundActor);
+
+        ImageButton.ImageButtonStyle backButtonStyle = new ImageButton.ImageButtonStyle();
+        Texture clockwiseNormal = new Texture("Textures/backbutton_normal(wood).png");
+        Texture clockwiseActive = new Texture("Textures/backbutton_active(wood).png");
+        backButtonStyle.up = new TextureRegionDrawable(clockwiseNormal);
+        backButtonStyle.down = new TextureRegionDrawable(clockwiseActive);
+        ImageButton backButton = new ImageButton(backButtonStyle);
+        backButton.setPosition(0, MainGame.SCREEN_HEIGHT-backButton.getHeight());
+        backButton.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                game.setScreen(firstScreen);
+            }
+
+        });
+        stage.addActor(backButton);
 
         for(DragAndDropActor element: elements){
             createBodies(element);
             if(element.NeedToWin) ++winCount;
         }
         createFinishLine();
+        winActor = new WinActor(startScreen, game);
+        stage.addActor(winActor);
+        winActor.setVisible(false);
     }
 
     private void createBodies(DragAndDropActor element){
+        TextureActor textureActor = new TextureActor(element);
+        stage.addActor(textureActor);
         switch (element.thingTypeEnum){
             case BALL -> {
-                createBall(element);
+                createBall(element, textureActor);
                 break;
             }
             case DESK -> {
-                createDesk(element);
+                createDesk(element, textureActor);
                 break;
             }
             case BALLOON -> {
-                createBalloon(element);
+                createBalloon(element, textureActor);
+                break;
+            }
+            default -> {
                 break;
             }
 //            case PUSHPIN -> {
@@ -82,7 +130,7 @@ public class PlayScreen implements Screen {
         }
     }
 
-    private void createBall(DragAndDropActor element){
+    private void createBall(DragAndDropActor element, TextureActor textureActor){
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
 
@@ -96,17 +144,18 @@ public class PlayScreen implements Screen {
         fixtureDef.shape = circleShape;
         fixtureDef.density = 0.5F;
         fixtureDef.friction = 0.4F;
-        fixtureDef.restitution = 1F;
+        fixtureDef.restitution = 0.5F;
 
-        BodyData data = new BodyData(element.thingTypeEnum, element.NeedToWin);
+        BodyData data = new BodyData(element.thingTypeEnum, element.NeedToWin, textureActor);
         body.setUserData(data);
+        bodies.add(body);
 
         Fixture fixture = body.createFixture(fixtureDef);
         circleShape.dispose();
     }
 
 
-    private void createDesk(DragAndDropActor element){
+    private void createDesk(DragAndDropActor element, TextureActor textureActor){
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.StaticBody;
 
@@ -123,14 +172,15 @@ public class PlayScreen implements Screen {
         fixtureDef.friction = 0.4F;
         fixtureDef.restitution = 0f;
 
-        BodyData data = new BodyData(element.thingTypeEnum, element.NeedToWin);
+        BodyData data = new BodyData(element.thingTypeEnum, element.NeedToWin, textureActor);
         body.setUserData(data);
+        bodies.add(body);
 
         Fixture fixture = body.createFixture(fixtureDef);
         shape.dispose();
     }
 
-    private void createBalloon(DragAndDropActor element){
+    private void createBalloon(DragAndDropActor element, TextureActor textureActor){
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
 
@@ -146,8 +196,9 @@ public class PlayScreen implements Screen {
         fixtureDef.friction = 0.5F;
         fixtureDef.restitution = 0.1F;
 
-        BodyData data = new BodyData(element.thingTypeEnum, element.NeedToWin);
+        BodyData data = new BodyData(element.thingTypeEnum, element.NeedToWin, textureActor);
         body.setUserData(data);
+        bodies.add(body);
 
         Fixture fixture = body.createFixture(fixtureDef);
         circleShape.dispose();
@@ -179,7 +230,7 @@ public class PlayScreen implements Screen {
             fixtureDef.isSensor = true;
             body.setUserData(ThingTypeEnum.FINISH_LINE);
 
-            BodyData data = new BodyData(ThingTypeEnum.FINISH_LINE, false);
+            BodyData data = new BodyData(ThingTypeEnum.FINISH_LINE, false, null);
             body.setUserData(data);
 
             Fixture fixture = body.createFixture(fixtureDef);
@@ -190,14 +241,23 @@ public class PlayScreen implements Screen {
 
     @Override
     public void render(float delta) {
+        ScreenUtils.clear(Color.CLEAR);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        debugRenderer.render(world, camera.combined);
+//        debugRenderer.render(world, camera.combined);
         world.step(1/60F, 6, 2);
+        for(Body body:bodies){
+            BodyData bodyData = (BodyData) body.getUserData();
+            TextureActor textureActor = bodyData.getTextureActor();
+            textureActor.setRotation((float) Math.toDegrees(body.getAngle()));
+            textureActor.setPosition(body.getPosition().x*PPM-textureActor.getWidth()/2, body.getPosition().y*PPM-textureActor.getHeight()/2);
+        }
+        stage.act();
+        stage.draw();
     }
 
     @Override
     public void resize(int width, int height) {
-
+        viewport.update(width, height);
     }
 
     @Override
@@ -217,7 +277,6 @@ public class PlayScreen implements Screen {
 
     @Override
     public void dispose() {
-
     }
 
     private class MyContactListener implements ContactListener {
@@ -236,6 +295,7 @@ public class PlayScreen implements Screen {
         public void endContact(Contact contact) {
             if(finishedCount == winCount){
                 System.out.println("WIN");
+                winActor.setVisible(true);
             }
         }
 
