@@ -29,9 +29,10 @@ import java.util.Set;
 public class PlayScreen implements Screen {
 
     private static final float PPM = 100;
-
-    float kx = MainGame.SCREEN_WIDTH / PPM;
-    float ky = MainGame.SCREEN_HEIGHT / PPM;
+    private int winCount = 0;
+    private int finishedCount = 0;
+    //    float kx = MainGame.SCREEN_WIDTH / PPM;
+//    float ky = MainGame.SCREEN_HEIGHT / PPM;
     private World world;
     private Box2DDebugRenderer debugRenderer;
     private OrthographicCamera camera;
@@ -55,11 +56,12 @@ public class PlayScreen implements Screen {
 
         for(DragAndDropActor element: elements){
             createBodies(element);
+            if(element.NeedToWin) ++winCount;
         }
         createFinishLine();
     }
 
-    public void createBodies(DragAndDropActor element){
+    private void createBodies(DragAndDropActor element){
         switch (element.thingTypeEnum){
             case BALL -> {
                 createBall(element);
@@ -96,6 +98,9 @@ public class PlayScreen implements Screen {
         fixtureDef.friction = 0.4F;
         fixtureDef.restitution = 1F;
 
+        BodyData data = new BodyData(element.thingTypeEnum, element.NeedToWin);
+        body.setUserData(data);
+
         Fixture fixture = body.createFixture(fixtureDef);
         circleShape.dispose();
     }
@@ -117,10 +122,12 @@ public class PlayScreen implements Screen {
         fixtureDef.density = 0.5f;
         fixtureDef.friction = 0.4F;
         fixtureDef.restitution = 0f;
+
+        BodyData data = new BodyData(element.thingTypeEnum, element.NeedToWin);
+        body.setUserData(data);
+
         Fixture fixture = body.createFixture(fixtureDef);
         shape.dispose();
-
-        body.setUserData(ThingTypeEnum.DESK);
     }
 
     private void createBalloon(DragAndDropActor element){
@@ -138,6 +145,9 @@ public class PlayScreen implements Screen {
         fixtureDef.density = 0.05F;
         fixtureDef.friction = 0.5F;
         fixtureDef.restitution = 0.1F;
+
+        BodyData data = new BodyData(element.thingTypeEnum, element.NeedToWin);
+        body.setUserData(data);
 
         Fixture fixture = body.createFixture(fixtureDef);
         circleShape.dispose();
@@ -167,6 +177,10 @@ public class PlayScreen implements Screen {
             FixtureDef fixtureDef = new FixtureDef();
             fixtureDef.shape = shape;
             fixtureDef.isSensor = true;
+            body.setUserData(ThingTypeEnum.FINISH_LINE);
+
+            BodyData data = new BodyData(ThingTypeEnum.FINISH_LINE, false);
+            body.setUserData(data);
 
             Fixture fixture = body.createFixture(fixtureDef);
 
@@ -178,7 +192,6 @@ public class PlayScreen implements Screen {
     public void render(float delta) {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         debugRenderer.render(world, camera.combined);
-
         world.step(1/60F, 6, 2);
     }
 
@@ -210,12 +223,20 @@ public class PlayScreen implements Screen {
     private class MyContactListener implements ContactListener {
         @Override
         public void beginContact(Contact contact) {
+            BodyData bodyAType = (BodyData) contact.getFixtureA().getBody().getUserData();
+            BodyData bodyBType = (BodyData) contact.getFixtureB().getBody().getUserData();
 
+
+            if(bodyAType.getTypeEnum() == ThingTypeEnum.FINISH_LINE && bodyBType.isNeedToWin()){
+                ++finishedCount;
+            }
         }
 
         @Override
         public void endContact(Contact contact) {
-
+            if(finishedCount == winCount){
+                System.out.println("WIN");
+            }
         }
 
         @Override
@@ -225,7 +246,6 @@ public class PlayScreen implements Screen {
 
         @Override
         public void postSolve(Contact contact, ContactImpulse impulse) {
-//            contact.getFixtureA().getBody()
         }
     }
 }

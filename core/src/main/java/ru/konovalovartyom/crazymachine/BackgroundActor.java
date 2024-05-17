@@ -6,8 +6,8 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 
 public class BackgroundActor extends Actor {
     private Texture texture;
-    public BackgroundActor(){
-        texture = new Texture("Textures/background_gamearea.jpg");
+    public BackgroundActor(Texture texture){
+        this.texture = texture;
     }
 
     @Override
@@ -15,3 +15,4 @@ public class BackgroundActor extends Actor {
         batch.draw(texture, getX(), getY(), MainGame.SCREEN_WIDTH, MainGame.SCREEN_HEIGHT);
     }
 }
+

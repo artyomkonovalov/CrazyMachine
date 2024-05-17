@@ -14,7 +14,7 @@ public class InventoryActor extends Actor {
     private final Texture background;
     private final int space = 10;
     private final int step = 50;
-    private final float childHeight = 75;
+    private final float childHeight = 100;
     private final float childWidth;
 
     public InventoryActor(float x, float y, int width, int height, float childWidth, float childHeight) {
@@ -39,12 +39,14 @@ public class InventoryActor extends Actor {
     }
 
     private void reorganization() {
-        float positionY = getTop()-75;
+        float positionY = getTop() - childHeight;
         float positionX = getX() + (getWidth() / 2F) - childWidth / 2;
 
         for (Actor actor : items) {
             positionY = positionY - actor.getHeight() - space;
             actor.setPosition(positionX, positionY);
+            if(actor.getTop() >= 0  && actor.getY() + actor.getHeight()/2 <= this.getTop() - childHeight) actor.setVisible(true);
+            else actor.setVisible(false);
         }
     }
 

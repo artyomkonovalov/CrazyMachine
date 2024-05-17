@@ -2,6 +2,7 @@ package ru.konovalovartyom.crazymachine;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -14,12 +15,17 @@ import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonReader;
+import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
+
 import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -31,71 +37,53 @@ public class FirstScreen implements Screen, RotateListener{
     private Stage stage;
     private final ShapeRenderer shapeRenderer = new ShapeRenderer();
     private Map<ThingTypeEnum, TextureRegion> textureMap;
+    private Map<String, ThingTypeEnum> stringToThingTypeEnumMap;
 
 //    private List<DragAndDropActor> elements = new ArrayList<>();
 
     private LinkedHashSet<DragAndDropActor> elements = new LinkedHashSet<>();
     private Viewport viewport;
+    public final boolean isCreateLevelScreen;
+    private FileHandle file;
 
-    public FirstScreen(MainGame game){
-        this.game = game;
-    }
     public DragAndDropActor isSelected;
     private Group buttons;
-    private CheckBox checkBox;
+    private CheckBox needToWin;
+
+    private CheckBox toInventory;
+
+    //Констркутор для экрана создания уровня
+    public FirstScreen(MainGame game, boolean isCreateLevelScreen){
+        this.game = game;
+        this.isCreateLevelScreen = isCreateLevelScreen;
+    }
+    //Конструктор для игрового экрана
+    public FirstScreen(MainGame game, boolean isCreateLevelScreen, FileHandle file){
+        this.game = game;
+        this.isCreateLevelScreen = isCreateLevelScreen;
+        this.file = file;
+    }
+
 
     @Override
     public void show() {
+        stringToThingTypeEnumMap = stringToThingTypeEnum();
         viewport = new FitViewport(MainGame.SCREEN_WIDTH, MainGame.SCREEN_HEIGHT);
         stage = new Stage(viewport);
         Gdx.input.setInputProcessor(stage);
 
         textureMap = createTextureMap();
 
-        BackgroundActor backgroundActor = new BackgroundActor();
+        BackgroundActor backgroundActor = new BackgroundActor(new Texture("Textures/background_gamearea.jpg"));
         stage.addActor(backgroundActor);
 
-        InventoryActor inventoryActor = new InventoryActor(1040, 0, 240, 720, 200, 200);
+        InventoryActor inventoryActor = new InventoryActor(1040, 0, 240, 720, 180, 200);
         stage.addActor(inventoryActor);
-
-        List<DragAndDropActor> list = new ArrayList<>();
-        for(int i = 0; i < 5; ++i){
-            DragAndDropActor ball = new DragAndDropActor(textureMap, ThingTypeEnum.BALL, inventoryActor, elements, this);
-            stage.addActor(ball);
-            list.add(ball);
-        }
-        for(int i = 0; i < 3; ++i){
-            DragAndDropActor deskActor = new DragAndDropActor(textureMap, ThingTypeEnum.DESK, inventoryActor, elements, this);
-            stage.addActor(deskActor);
-            inventoryActor.addItem(deskActor);
-        }
-
-        DragAndDropActor balloon = new DragAndDropActor(textureMap, ThingTypeEnum.BALLOON, inventoryActor, elements, this);
-        stage.addActor(balloon);
-        inventoryActor.addItem(balloon);
-
-        inventoryActor.addItems(list);
-        for(int i = 0; i < 3; ++i){
-            DragAndDropActor pushpin = new DragAndDropActor(textureMap, ThingTypeEnum.PUSHPIN, inventoryActor, elements, this);
-            stage.addActor(pushpin);
-            inventoryActor.addItem(pushpin);
-        }
 
         buttons = new RotateButtonsActor(this);
         stage.addActor(buttons);
         buttons.setVisible(false);
 
-        checkBox = new CheckBox("Need to win?", new Skin(Gdx.files.internal("ui/uiskin.json")));
-        checkBox.setChecked(false);
-        stage.addActor(checkBox);
-        checkBox.addListener(new ClickListener(){
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                if(isSelected != null){
-                    isSelected.NeedToWin = ! isSelected.NeedToWin;
-                }
-            }
-        });
         ImageButton upButton = createButton("up");
         upButton.setHeight(upButton.getHeight()/1.5F);
         upButton.setPosition(inventoryActor.getX() + (inventoryActor.getWidth()-upButton.getWidth())/2, inventoryActor.getHeight()-upButton.getHeight());
@@ -129,6 +117,115 @@ public class FirstScreen implements Screen, RotateListener{
                 dispose();
             }
         });
+
+        if(isCreateLevelScreen){
+            //Интерфейс для редактирования уровня
+            ImageButton.ImageButtonStyle saveStyle = new ImageButton.ImageButtonStyle();
+            saveStyle.up = new TextureRegionDrawable(new Texture("Textures/savebutton_normal(wood).png"));
+            saveStyle.down = new TextureRegionDrawable(new Texture("Textures/savebutton_active(wood).png"));
+            ImageButton saveButton = new ImageButton(saveStyle);
+            stage.addActor(saveButton);
+            saveButton.setPosition(MainGame.SCREEN_WIDTH-startButton.getWidth(), startButton.getHeight() + 10);
+            saveButton.addListener(new ClickListener(){
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    super.clicked(event, x, y);
+                    saveLevel();
+                }
+            });
+
+            needToWin = new CheckBox("Need to win?", new Skin(Gdx.files.internal("ui/uiskin.json")));
+            needToWin.setChecked(false);
+            stage.addActor(needToWin);
+            needToWin.addListener(new ClickListener(){
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    if(isSelected != null){
+                        isSelected.NeedToWin = ! isSelected.NeedToWin;
+                    }
+                }
+            });
+
+            toInventory = new CheckBox("To inventory?", new Skin(Gdx.files.internal("ui/uiskin.json")));
+            toInventory.setChecked(false);
+            stage.addActor(toInventory);
+            toInventory.addListener(new ClickListener(){
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    if(isSelected != null){
+                        isSelected.toInventory = !isSelected.toInventory;
+                    }
+                }
+            });
+
+            List<DragAndDropActor> list = new ArrayList<>();
+            for(int i = 0; i < 5; ++i){
+                DragAndDropActor ball = new DragAndDropActor(textureMap, ThingTypeEnum.BALL, inventoryActor, elements, this);
+                stage.addActor(ball);
+                list.add(ball);
+            }
+            for(int i = 0; i < 3; ++i){
+                DragAndDropActor deskActor = new DragAndDropActor(textureMap, ThingTypeEnum.DESK, inventoryActor, elements, this);
+                stage.addActor(deskActor);
+                inventoryActor.addItem(deskActor);
+            }
+
+            DragAndDropActor balloon = new DragAndDropActor(textureMap, ThingTypeEnum.BALLOON, inventoryActor, elements, this);
+            stage.addActor(balloon);
+            inventoryActor.addItem(balloon);
+
+            inventoryActor.addItems(list);
+            for(int i = 0; i < 3; ++i){
+                DragAndDropActor pushpin = new DragAndDropActor(textureMap, ThingTypeEnum.PUSHPIN, inventoryActor, elements, this);
+                stage.addActor(pushpin);
+                inventoryActor.addItem(pushpin);
+            }
+        }
+
+        if(!isCreateLevelScreen){
+            String data = file.readString();
+            JsonValue root = new JsonReader().parse(data);
+            for(JsonValue entry : root){
+                DragAndDropActor actor = new DragAndDropActor(textureMap, stringToThingTypeEnumMap.get(entry.getString("actorType")), inventoryActor, elements, this, entry.get("isNeedToWin").asBoolean(), entry.get("toInventory").asBoolean());
+                stage.addActor(actor);
+                actor.setPosition(entry.get("x").asInt(), entry.get("y").asInt());
+                actor.setRotation(entry.get("angle").asInt());
+                if(actor.toInventory){
+                    inventoryActor.addItem(actor);
+                }
+            }
+        }
+    }
+
+    private Map<String, ThingTypeEnum> stringToThingTypeEnum(){
+        HashMap<String, ThingTypeEnum> stringToThingTypeEnumMap = new HashMap<>();
+        stringToThingTypeEnumMap.put("BALL", ThingTypeEnum.BALL);
+        stringToThingTypeEnumMap.put("DESK", ThingTypeEnum.DESK);
+        stringToThingTypeEnumMap.put("DOMINO", ThingTypeEnum.DOMINO);
+        stringToThingTypeEnumMap.put("BALLOON", ThingTypeEnum.BALLOON);
+        stringToThingTypeEnumMap.put("PUSHPIN", ThingTypeEnum.PUSHPIN);
+        return stringToThingTypeEnumMap;
+    }
+    private void saveLevel(){
+        Json json = new Json();
+        ArrayList<Object> actors = new ArrayList<>();
+        for(DragAndDropActor element:elements){
+            SaveActor saveActor = new SaveActor(element.thingTypeEnum, element.getX(), element.getY(), element.getRotation(), element.NeedToWin, element.toInventory);
+            actors.add(saveActor);
+        }
+        FileHandle directory = Gdx.files.local("levels/");
+        String levelName = "level" + filesCount() + ".json";
+        String data = json.prettyPrint(actors);
+        System.out.println(data);
+        directory.child(levelName).writeString(data, false);
+    }
+    private int filesCount(){
+        int count = 0;
+        FileHandle[] files = Gdx.files.local("levels/").list();
+        for(FileHandle file: files) {
+            ++count;
+        }
+        return count;
     }
 
     private Map<ThingTypeEnum, TextureRegion> createTextureMap(){
@@ -150,12 +247,22 @@ public class FirstScreen implements Screen, RotateListener{
         } else{
             buttons.setVisible(false);
         }
-        if(isSelected != null && isSelected.thingTypeEnum == ThingTypeEnum.BALL){
-            checkBox.setVisible(isSelected.isVisible());
-            checkBox.setPosition(isSelected.getX()+isSelected.getWidth(), isSelected.getY()+isSelected.getHeight());
-            checkBox.setChecked(isSelected.NeedToWin);
-        } else{
-            checkBox.setVisible(false);
+        if(isCreateLevelScreen){
+            if(isSelected != null && isSelected.thingTypeEnum == ThingTypeEnum.BALL){
+                needToWin.setVisible(isSelected.isVisible());
+                needToWin.setPosition(isSelected.getX()+isSelected.getWidth(), isSelected.getY()+isSelected.getHeight());
+                needToWin.setChecked(isSelected.NeedToWin);
+            } else{
+                needToWin.setVisible(false);
+            }
+
+            if(isSelected != null && isSelected.thingTypeEnum != ThingTypeEnum.PUSHPIN){
+                toInventory.setVisible(isSelected.isVisible());
+                toInventory.setPosition(isSelected.getX()+isSelected.getWidth(), isSelected.getY());
+                toInventory.setChecked(isSelected.toInventory);
+            } else{
+                needToWin.setVisible(false);
+            }
         }
         stage.act();
         stage.draw();
@@ -180,14 +287,14 @@ public class FirstScreen implements Screen, RotateListener{
         Texture activeTexture = null;
 
         if(typeButton == "up"){
-            normalTexture = new Texture("Textures/upbutton_normal.png");
-            activeTexture = new Texture("Textures/upbutton_active.png");
+            normalTexture = new Texture("Textures/upbutton_normal(wood).png");
+            activeTexture = new Texture("Textures/upbutton_active(wood).png");
         } else if(typeButton == "down"){
-            normalTexture = new Texture("Textures/downbutton_normal.png");
-            activeTexture = new Texture("Textures/downbutton_active.png");
+            normalTexture = new Texture("Textures/downbutton_normal(wood).png");
+            activeTexture = new Texture("Textures/downbutton_active(wood).png");
         } else if(typeButton == "start"){
-            normalTexture = new Texture("Textures/startButton_normal.png");
-            activeTexture = new Texture("Textures/startButton_active.png");
+            normalTexture = new Texture("Textures/startButton_normal(wood).png");
+            activeTexture = new Texture("Textures/startButton_active(wood).png");
         }
 
         ImageButton.ImageButtonStyle style = new ImageButton.ImageButtonStyle();
@@ -227,7 +334,10 @@ public class FirstScreen implements Screen, RotateListener{
     @Override
     public void rotate(float degree) {
         if (isSelected != null){
-            isSelected.setRotation(isSelected.getRotation() + degree);
+//            isSelected.setRotation(isSelected.getRotation() + degree);
+            isSelected.rotateBy(degree);
+//            isSelected.setHeight((float) (isSelected.getHeight() + isSelected.getWidth()*Math.sin(isSelected.getRotation())));
+//            isSelected.setWidth((float) (isSelected.getWidth()*Math.cos(isSelected.getRotation())));
         }
     }
 }

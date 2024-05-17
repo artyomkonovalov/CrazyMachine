@@ -6,7 +6,6 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -18,6 +17,7 @@ public class DragAndDropActor extends Actor {
     public FirstScreen screen;
     public ThingTypeEnum thingTypeEnum;
     public boolean NeedToWin;
+    public boolean toInventory;
     public DragAndDropActor(Map<ThingTypeEnum, TextureRegion> textureRegionMap, ThingTypeEnum thingTypeEnum, InventoryActor inventory, Set<DragAndDropActor> elements, FirstScreen firstScreen) {
         this.screen = firstScreen;
         this.thingTypeEnum = thingTypeEnum;
@@ -25,37 +25,89 @@ public class DragAndDropActor extends Actor {
         setWidth(textureRegion.getRegionWidth());
         setHeight(textureRegion.getRegionHeight());
         setOrigin(getWidth()/2, getHeight()/2);
-        addListener(
-            new InputListener() {
-                @Override
-                public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                    toFront();
-                    //addAction(Actions.scaleTo(1.1f, 1.1f, 0.25f));
-                    grabOffsetX = x;
-                    grabOffsetY = y;
-                    return true;
-                }
-
-                @Override
-                public void touchDragged(InputEvent event, float x, float y, int pointer) {
-                    float deltaX = x - grabOffsetX;
-                    float deltaY = y - grabOffsetY;
-                    moveBy(deltaX, deltaY);
-                }
-
-                @Override
-                public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                    super.touchUp(event, x, y, pointer, button);
-                    if(getX() + getWidth()/2 >= inventory.getX()){
-                        inventory.addItem(DragAndDropActor.this);
-                        elements.remove(DragAndDropActor.this);
-                    }else {
-                        elements.add(DragAndDropActor.this);
+        if(screen.isCreateLevelScreen){
+            addListener(
+                new InputListener() {
+                    @Override
+                    public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                        toFront();
+                        //addAction(Actions.scaleTo(1.1f, 1.1f, 0.25f));
+                        grabOffsetX = x;
+                        grabOffsetY = y;
+                        System.out.println(getWidth() + " " + getHeight());
+                        System.out.println(getOriginX() + " " + getOriginY());
+                        System.out.println(getX() + " " + getY());
+                        return true;
                     }
-                    screen.isSelected = DragAndDropActor.this;
+
+                    @Override
+                    public void touchDragged(InputEvent event, float x, float y, int pointer) {
+                        float deltaX = x - grabOffsetX;
+                        float deltaY = y - grabOffsetY;
+                        moveBy(deltaX, deltaY);
+                    }
+
+                    @Override
+                    public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                        super.touchUp(event, x, y, pointer, button);
+                        if(getX() + getWidth()/2 >= inventory.getX()){
+                            inventory.addItem(DragAndDropActor.this);
+                            elements.remove(DragAndDropActor.this);
+                        }else {
+                            elements.add(DragAndDropActor.this);
+                        }
+                        screen.isSelected = DragAndDropActor.this;
+                    }
                 }
-            }
-        );
+            );
+        }
+
+    }
+    public DragAndDropActor(Map<ThingTypeEnum, TextureRegion> textureRegionMap, ThingTypeEnum thingTypeEnum, InventoryActor inventory, Set<DragAndDropActor> elements, FirstScreen firstScreen, boolean NeedToWin, boolean toInventory){
+        this.screen = firstScreen;
+        this.thingTypeEnum = thingTypeEnum;
+        this.textureRegion = textureRegionMap.get(thingTypeEnum);
+        this.toInventory = toInventory;
+        this.NeedToWin = NeedToWin;
+        setWidth(textureRegion.getRegionWidth());
+        setHeight(textureRegion.getRegionHeight());
+        setOrigin(getWidth()/2, getHeight()/2);
+        if(screen.isCreateLevelScreen || this.toInventory){
+            addListener(
+                new InputListener() {
+                    @Override
+                    public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                        toFront();
+                        //addAction(Actions.scaleTo(1.1f, 1.1f, 0.25f));
+                        grabOffsetX = x;
+                        grabOffsetY = y;
+                        System.out.println(getWidth() + " " + getHeight());
+                        System.out.println(getOriginX() + " " + getOriginY());
+                        System.out.println(getX() + " " + getY());
+                        return true;
+                    }
+
+                    @Override
+                    public void touchDragged(InputEvent event, float x, float y, int pointer) {
+                        float deltaX = x - grabOffsetX;
+                        float deltaY = y - grabOffsetY;
+                        moveBy(deltaX, deltaY);
+                    }
+
+                    @Override
+                    public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                        super.touchUp(event, x, y, pointer, button);
+                        if(getX() + getWidth()/2 >= inventory.getX()){
+                            inventory.addItem(DragAndDropActor.this);
+                            elements.remove(DragAndDropActor.this);
+                        }else {
+                            elements.add(DragAndDropActor.this);
+                        }
+                        screen.isSelected = DragAndDropActor.this;
+                    }
+                }
+            );
+        }
     }
 
     @Override
