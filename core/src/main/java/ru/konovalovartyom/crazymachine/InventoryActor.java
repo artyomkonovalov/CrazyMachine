@@ -23,6 +23,9 @@ public class InventoryActor extends Actor {
         this.childWidth = childWidth;
     }
 
+    public List<DragAndDropActor> getItems(){
+        return items;
+    }
     public void addItems(List<DragAndDropActor> actors) {
         if(!actors.isEmpty()) {
             for(DragAndDropActor item:actors){
@@ -36,6 +39,9 @@ public class InventoryActor extends Actor {
             items.add(actor);
             reorganization();
         }
+    }
+    public void clearItems(){
+        items.clear();
     }
 
     private void reorganization() {

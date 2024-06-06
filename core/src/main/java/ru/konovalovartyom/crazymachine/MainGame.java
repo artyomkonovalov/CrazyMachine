@@ -9,7 +9,6 @@ public class MainGame extends Game {
     public static final int SCREEN_HEIGHT = 720;
     @Override
     public void create() {
-//        setScreen(new FirstScreen(this));
         setScreen(new StartScreen(this));
     }
 }

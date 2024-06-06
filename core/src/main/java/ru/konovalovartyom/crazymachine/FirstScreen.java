@@ -35,10 +35,11 @@ import java.util.Map;
 public class FirstScreen implements Screen, RotateListener{
     private StartScreen startScreen;
     private final MainGame game;
-    private Stage stage;
+    public Stage stage;
     private final ShapeRenderer shapeRenderer = new ShapeRenderer();
     private Map<ThingTypeEnum, TextureRegion> textureMap;
     private Map<String, ThingTypeEnum> stringToThingTypeEnumMap;
+    private InventoryActor inventoryActor;
 
 //    private List<DragAndDropActor> elements = new ArrayList<>();
 
@@ -75,12 +76,14 @@ public class FirstScreen implements Screen, RotateListener{
         stage = new Stage(viewport);
         Gdx.input.setInputProcessor(stage);
 
+        elements.clear();
+
         textureMap = createTextureMap();
 
         BackgroundActor backgroundActor = new BackgroundActor(new Texture("Textures/background_gamearea.jpg"));
         stage.addActor(backgroundActor);
 
-        InventoryActor inventoryActor = new InventoryActor(1040, 0, 240, 720, 180, 200);
+        inventoryActor = new InventoryActor(1040, 0, 240, 720, 180, 200);
         stage.addActor(inventoryActor);
 
         buttons = new RotateButtonsActor(this);
@@ -176,28 +179,35 @@ public class FirstScreen implements Screen, RotateListener{
                 }
             });
 
-            List<DragAndDropActor> list = new ArrayList<>();
-            for(int i = 0; i < 5; ++i){
-                DragAndDropActor ball = new DragAndDropActor(textureMap, ThingTypeEnum.BALL, inventoryActor, elements, this);
-                stage.addActor(ball);
-                list.add(ball);
+            for(ThingTypeEnum elementType:ThingTypeEnum.values()){
+                if(elementType != ThingTypeEnum.FINISH_LINE) {
+                    DragAndDropActor currentElement = new DragAndDropActor(textureMap, elementType, inventoryActor, elements, this);
+                    inventoryActor.addItem(currentElement);
+                    stage.addActor(currentElement);
+                }
             }
-            for(int i = 0; i < 3; ++i){
-                DragAndDropActor deskActor = new DragAndDropActor(textureMap, ThingTypeEnum.DESK, inventoryActor, elements, this);
-                stage.addActor(deskActor);
-                inventoryActor.addItem(deskActor);
-            }
-
-            DragAndDropActor balloon = new DragAndDropActor(textureMap, ThingTypeEnum.BALLOON, inventoryActor, elements, this);
-            stage.addActor(balloon);
-            inventoryActor.addItem(balloon);
-
-            inventoryActor.addItems(list);
-            for(int i = 0; i < 3; ++i){
-                DragAndDropActor pushpin = new DragAndDropActor(textureMap, ThingTypeEnum.PUSHPIN, inventoryActor, elements, this);
-                stage.addActor(pushpin);
-                inventoryActor.addItem(pushpin);
-            }
+//            List<DragAndDropActor> list = new ArrayList<>();
+//            for(int i = 0; i < 5; ++i){
+//                DragAndDropActor ball = new DragAndDropActor(textureMap, ThingTypeEnum.BALL, inventoryActor, elements, this);
+//                stage.addActor(ball);
+//                list.add(ball);
+//            }
+//            for(int i = 0; i < 3; ++i){
+//                DragAndDropActor deskActor = new DragAndDropActor(textureMap, ThingTypeEnum.DESK, inventoryActor, elements, this);
+//                stage.addActor(deskActor);
+//                inventoryActor.addItem(deskActor);
+//            }
+//
+//            DragAndDropActor balloon = new DragAndDropActor(textureMap, ThingTypeEnum.BALLOON, inventoryActor, elements, this);
+//            stage.addActor(balloon);
+//            inventoryActor.addItem(balloon);
+//
+//            inventoryActor.addItems(list);
+//            for(int i = 0; i < 3; ++i){
+//                DragAndDropActor pushpin = new DragAndDropActor(textureMap, ThingTypeEnum.PUSHPIN, inventoryActor, elements, this);
+//                stage.addActor(pushpin);
+//                inventoryActor.addItem(pushpin);
+//            }
         }
 
         if(!isCreateLevelScreen){
@@ -207,12 +217,12 @@ public class FirstScreen implements Screen, RotateListener{
                 DragAndDropActor actor = new DragAndDropActor(textureMap, stringToThingTypeEnumMap.get(entry.getString("actorType")), inventoryActor, elements, this, entry.get("isNeedToWin").asBoolean(), entry.get("toInventory").asBoolean());
                 stage.addActor(actor);
                 actor.setPosition(entry.get("x").asInt(), entry.get("y").asInt());
-                actor.setRotation(entry.get("angle").asInt());
                 if(actor.toInventory){
                     inventoryActor.addItem(actor);
                 }
                 else{
                     elements.add(actor);
+                    actor.setRotation(entry.get("angle").asInt());
                 }
             }
         }
@@ -222,11 +232,26 @@ public class FirstScreen implements Screen, RotateListener{
         HashMap<String, ThingTypeEnum> stringToThingTypeEnumMap = new HashMap<>();
         stringToThingTypeEnumMap.put("BALL", ThingTypeEnum.BALL);
         stringToThingTypeEnumMap.put("DESK", ThingTypeEnum.DESK);
-        stringToThingTypeEnumMap.put("DOMINO", ThingTypeEnum.DOMINO);
+//        stringToThingTypeEnumMap.put("DOMINO", ThingTypeEnum.DOMINO);
         stringToThingTypeEnumMap.put("BALLOON", ThingTypeEnum.BALLOON);
         stringToThingTypeEnumMap.put("PUSHPIN", ThingTypeEnum.PUSHPIN);
         return stringToThingTypeEnumMap;
     }
+
+    public void inventoryReorganization(){
+        for(DragAndDropActor actor:inventoryActor.getItems()){
+            actor.remove();
+        }
+        inventoryActor.clearItems();
+        for(ThingTypeEnum elementType:ThingTypeEnum.values()){
+            if(elementType != ThingTypeEnum.FINISH_LINE) {
+                DragAndDropActor currentElement = new DragAndDropActor(textureMap, elementType, inventoryActor, elements, this);
+                inventoryActor.addItem(currentElement);
+                stage.addActor(currentElement);
+            }
+        }
+    }
+
     private void saveLevel(){
         Json json = new Json();
         ArrayList<Object> actors = new ArrayList<>();
@@ -254,15 +279,17 @@ public class FirstScreen implements Screen, RotateListener{
         //HashMap<ThingTypeEnum, TextureRegion> textureMap = new HashMap<>();
         textureMap.put(ThingTypeEnum.BALL, new TextureRegion(new Texture("Textures/football.png")));
         textureMap.put(ThingTypeEnum.DESK, new TextureRegion(new Texture("Textures/desk1.png")));
+        textureMap.put(ThingTypeEnum.DOMINO, new TextureRegion(new Texture("Textures/domino.png")));
         textureMap.put(ThingTypeEnum.PUSHPIN, new TextureRegion(new Texture("Textures/pushpin.png")));
         textureMap.put(ThingTypeEnum.BALLOON, new TextureRegion(new Texture("Textures/balloon.png")));
+        textureMap.put(ThingTypeEnum.FAN, new TextureRegion(new Texture("Textures/fan.png")));
         return textureMap;
     }
 
     @Override
     public void render(float delta) {
         ScreenUtils.clear(Color.CLEAR);
-        if(isSelected != null && isSelected.thingTypeEnum == ThingTypeEnum.DESK){
+        if(isSelected != null && (isSelected.thingTypeEnum == ThingTypeEnum.DESK || isSelected.thingTypeEnum == ThingTypeEnum.FAN)){
             buttons.setVisible(isSelected.isVisible());
             buttons.setPosition(isSelected.getX()-buttons.getWidth()-5, isSelected.getY());
         } else{
@@ -282,7 +309,7 @@ public class FirstScreen implements Screen, RotateListener{
                 toInventory.setPosition(isSelected.getX()+isSelected.getWidth(), isSelected.getY());
                 toInventory.setChecked(isSelected.toInventory);
             } else{
-                needToWin.setVisible(false);
+                toInventory.setVisible(false);
             }
         }
         stage.act();
@@ -345,6 +372,8 @@ public class FirstScreen implements Screen, RotateListener{
     @Override
     public void hide() {
         // This method is called when another screen replaces this one.
+        isSelected = null;
+        Gdx.input.setInputProcessor(null);
     }
 
     @Override

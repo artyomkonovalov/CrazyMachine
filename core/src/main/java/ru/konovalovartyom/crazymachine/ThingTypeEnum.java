@@ -6,5 +6,6 @@ public enum ThingTypeEnum {
     BALLOON,
     DOMINO,
     PUSHPIN,
+    FAN,
     FINISH_LINE
 }

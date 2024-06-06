@@ -50,13 +50,27 @@ public class DragAndDropActor extends Actor {
                     @Override
                     public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                         super.touchUp(event, x, y, pointer, button);
-                        if(getX() + getWidth()/2 >= inventory.getX()){
-                            inventory.addItem(DragAndDropActor.this);
-                            elements.remove(DragAndDropActor.this);
-                        }else {
-                            elements.add(DragAndDropActor.this);
-                        }
                         screen.isSelected = DragAndDropActor.this;
+                        if(firstScreen.isCreateLevelScreen){
+                            if(getX() + getWidth()/2 >= inventory.getX()){
+                                elements.remove(DragAndDropActor.this);
+                                firstScreen.isSelected = null;
+                                DragAndDropActor.this.remove();
+                            }else {
+                                elements.add(DragAndDropActor.this);
+                            }
+                            screen.inventoryReorganization();
+                        }
+                        else{
+                            if(getX() + getWidth()/2 >= inventory.getX()){
+                                firstScreen.isSelected.setRotation(0);
+                                inventory.addItem(DragAndDropActor.this);
+                                firstScreen.isSelected = null;
+                                elements.remove(DragAndDropActor.this);
+                            }else {
+                                elements.add(DragAndDropActor.this);
+                            }
+                        }
                     }
                 }
             );
@@ -97,13 +111,26 @@ public class DragAndDropActor extends Actor {
                     @Override
                     public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                         super.touchUp(event, x, y, pointer, button);
-                        if(getX() + getWidth()/2 >= inventory.getX()){
-                            inventory.addItem(DragAndDropActor.this);
-                            elements.remove(DragAndDropActor.this);
-                        }else {
-                            elements.add(DragAndDropActor.this);
-                        }
                         screen.isSelected = DragAndDropActor.this;
+                        if(firstScreen.isCreateLevelScreen){
+                            if(getX() + getWidth()/2 >= inventory.getX()){
+                                firstScreen.isSelected = null;
+                                elements.remove(DragAndDropActor.this);
+                            }else {
+                                elements.add(DragAndDropActor.this);
+                                screen.inventoryReorganization();
+                            }
+                        }
+                        else{
+                            if(getX() + getWidth()/2 >= inventory.getX()){
+                                firstScreen.isSelected.setRotation(0);
+                                firstScreen.isSelected = null;
+                                inventory.addItem(DragAndDropActor.this);
+                                elements.remove(DragAndDropActor.this);
+                            }else {
+                                elements.add(DragAndDropActor.this);
+                            }
+                        }
                     }
                 }
             );

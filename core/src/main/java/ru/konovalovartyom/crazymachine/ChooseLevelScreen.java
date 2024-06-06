@@ -24,7 +24,7 @@ public class ChooseLevelScreen implements Screen {
     private static final int STARTY = 530;
     public static final int STEPX = 155;
     public static final int STEPY = 155;
-    private ArrayList<LevelActor> levels = new ArrayList<>();
+    private ArrayList<LevelActor> levels;
 
 
     public ChooseLevelScreen(MainGame game, StartScreen startScreen) {
@@ -56,7 +56,7 @@ public class ChooseLevelScreen implements Screen {
 
         });
         stage.addActor(backButton);
-
+        levels = new ArrayList<>();
         FileHandle[] files = Gdx.files.local("levels/").list();
         for(FileHandle file: files) {
             LevelActor levelActor = new LevelActor(file);
@@ -100,7 +100,7 @@ public class ChooseLevelScreen implements Screen {
 
     @Override
     public void hide() {
-
+        Gdx.input.setInputProcessor(null);
     }
 
     @Override

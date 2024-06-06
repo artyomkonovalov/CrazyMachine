@@ -120,6 +120,13 @@ public class PlayScreen implements Screen {
                 createBalloon(element, textureActor);
                 break;
             }
+            case DOMINO -> {
+                createDomino(element, textureActor);
+                break;
+            }
+            case FAN -> {
+                createFan(element, textureActor);
+            }
             default -> {
                 break;
             }
@@ -169,7 +176,7 @@ public class PlayScreen implements Screen {
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
         fixtureDef.density = 0.5f;
-        fixtureDef.friction = 0.4F;
+        fixtureDef.friction = 0.6F;
         fixtureDef.restitution = 0f;
 
         BodyData data = new BodyData(element.thingTypeEnum, element.NeedToWin, textureActor);
@@ -186,14 +193,14 @@ public class PlayScreen implements Screen {
 
         Body body = world.createBody(bodyDef);
         body.setTransform(element.getX()/PPM + element.getWidth()/(2*PPM), element.getY()/PPM + element.getHeight()/(2*PPM), 0F);
-        body.applyForceToCenter(0, 10, true);
+        body.setGravityScale(-0.5F);
         CircleShape circleShape = new CircleShape();
         circleShape.setRadius(element.getWidth()/(2*PPM));
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = circleShape;
-        fixtureDef.density = 0.05F;
-        fixtureDef.friction = 0.5F;
+        fixtureDef.density = 0.005F;
+        fixtureDef.friction = 1F;
         fixtureDef.restitution = 0.1F;
 
         BodyData data = new BodyData(element.thingTypeEnum, element.NeedToWin, textureActor);
@@ -202,6 +209,71 @@ public class PlayScreen implements Screen {
 
         Fixture fixture = body.createFixture(fixtureDef);
         circleShape.dispose();
+    }
+
+    private void createDomino(DragAndDropActor element, TextureActor textureActor){
+        BodyDef bodyDef = new BodyDef();
+        bodyDef.type = BodyDef.BodyType.DynamicBody;
+
+        Body body = world.createBody(bodyDef);
+
+        PolygonShape shape = new PolygonShape();
+        shape.setAsBox(element.getWidth()/(2*PPM), element.getHeight()/(2*PPM));
+
+        body.setTransform((element.getX() + element.getWidth()/2)/PPM, (element.getY() + element.getHeight()/2)/PPM, element.getRotation()*3.14F/180);
+
+        FixtureDef fixtureDef = new FixtureDef();
+        fixtureDef.shape = shape;
+        fixtureDef.density = 0.5f;
+        fixtureDef.friction = 0.6F;
+        fixtureDef.restitution = 0f;
+
+        BodyData data = new BodyData(element.thingTypeEnum, element.NeedToWin, textureActor);
+        body.setUserData(data);
+        bodies.add(body);
+
+        Fixture fixture = body.createFixture(fixtureDef);
+        shape.dispose();
+    }
+
+    private void createFan(DragAndDropActor element, TextureActor textureActor){
+        BodyDef bodyDef = new BodyDef();
+        bodyDef.type = BodyDef.BodyType.StaticBody;
+
+        Body body = world.createBody(bodyDef);
+
+//        Vector2[] vertices = new Vector2[]{
+//            new Vector2(83/PPM, 19/PPM),
+//            new Vector2(94/PPM, 100/PPM),
+//            new Vector2(25/PPM, 103/PPM),
+//            new Vector2(6/PPM, 95/PPM),
+//            new Vector2(0/PPM, 123/PPM),
+//            new Vector2(5/PPM, 147/PPM),
+//            new Vector2(24/PPM, 139/PPM),
+//            new Vector2(116/PPM, 148/PPM),
+//            new Vector2(144/PPM, 148/PPM),
+//            new Vector2(150/PPM, 128/PPM),
+//            new Vector2(143/PPM, 100/PPM),
+//            new Vector2(117/PPM, 90/PPM),
+//            new Vector2(107/PPM, 26/PPM),
+//            new Vector2(83/PPM, 19/PPM),
+//        };
+        PolygonShape shape = new PolygonShape();
+        shape.setAsBox(element.getWidth()/(4*PPM), element.getHeight()/(2.5F*PPM));
+        body.setTransform((element.getX() + element.getWidth()/2)/PPM, (element.getY() + element.getHeight()/2)/PPM, element.getRotation()*3.14F/180);
+
+        FixtureDef fixtureDef = new FixtureDef();
+        fixtureDef.shape = shape;
+        fixtureDef.density = 0.5f;
+        fixtureDef.friction = 0.6F;
+        fixtureDef.restitution = 0f;
+
+        BodyData data = new BodyData(element.thingTypeEnum, element.NeedToWin, textureActor);
+        body.setUserData(data);
+        bodies.add(body);
+
+        Fixture fixture = body.createFixture(fixtureDef);
+        shape.dispose();
     }
 
     private void createFinishLine(){
@@ -248,7 +320,9 @@ public class PlayScreen implements Screen {
         for(Body body:bodies){
             BodyData bodyData = (BodyData) body.getUserData();
             TextureActor textureActor = bodyData.getTextureActor();
-            textureActor.setRotation((float) Math.toDegrees(body.getAngle()));
+            if(bodyData.getTypeEnum() != ThingTypeEnum.BALLOON){
+                textureActor.setRotation((float) Math.toDegrees(body.getAngle()));
+            }
             textureActor.setPosition(body.getPosition().x*PPM-textureActor.getWidth()/2, body.getPosition().y*PPM-textureActor.getHeight()/2);
         }
         stage.act();
@@ -272,7 +346,7 @@ public class PlayScreen implements Screen {
 
     @Override
     public void hide() {
-
+        Gdx.input.setInputProcessor(null);
     }
 
     @Override
@@ -293,7 +367,7 @@ public class PlayScreen implements Screen {
 
         @Override
         public void endContact(Contact contact) {
-            if(finishedCount == winCount){
+            if(finishedCount == winCount && winCount > 0){
                 System.out.println("WIN");
                 winActor.setVisible(true);
             }
