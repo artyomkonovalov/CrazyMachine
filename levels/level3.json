@@ -1,0 +1,29 @@
+[
+{
+	class: ru.konovalovartyom.crazymachine.SaveActor
+	actorType: BALL
+	x: 518
+	y: 488
+	angle: 0
+	isNeedToWin: true
+	toInventory: true
+}
+{
+	class: ru.konovalovartyom.crazymachine.SaveActor
+	actorType: PUSHPIN
+	x: 752
+	y: 221.00002
+	angle: 0
+	isNeedToWin: false
+	toInventory: false
+}
+{
+	class: ru.konovalovartyom.crazymachine.SaveActor
+	actorType: PUSHPIN
+	x: 375
+	y: 220.00002
+	angle: 0
+	isNeedToWin: false
+	toInventory: false
+}
+]

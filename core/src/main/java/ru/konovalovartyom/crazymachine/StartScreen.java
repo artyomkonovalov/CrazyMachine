@@ -17,18 +17,24 @@ public class StartScreen implements Screen {
     private final MainGame game;
     private Viewport viewport;
     private Stage stage;
+    private  boolean startButtonPressed;
 
-    FirstScreen createLevelScreen;
-    ChooseLevelScreen chooseLevelScreen;
+    private FirstScreen createLevelScreen;
+    private ChooseLevelScreen chooseLevelScreen;
+    private ChooseLevelScreen localLevelScreen;
+    private InfoScreen infoScreen;
 
     public StartScreen(MainGame game) {
         this.game = game;
         createLevelScreen = new FirstScreen(this, game, true);
-        chooseLevelScreen = new ChooseLevelScreen(game, this);
+        chooseLevelScreen = new ChooseLevelScreen(game, this, false);
+        localLevelScreen = new ChooseLevelScreen(game, this, true);
+        infoScreen = new InfoScreen(game, this);
     }
 
     @Override
     public void show() {
+        startButtonPressed = false;
         viewport = new FitViewport(MainGame.SCREEN_WIDTH, MainGame.SCREEN_HEIGHT);
         stage = new Stage(viewport);
         Gdx.input.setInputProcessor(stage);
@@ -48,32 +54,69 @@ public class StartScreen implements Screen {
         buttonStyle.up = new TextureRegionDrawable(ButtonUp);
         buttonStyle.down = new TextureRegionDrawable(ButtonDown);
         buttonStyle.font = bitmapfont;
-        TextButton startButton = new TextButton("Start", buttonStyle);
+
+        TextButton startButton = new TextButton("Играть", buttonStyle);
         stage.addActor(startButton);
         startButton.setPosition(MainGame.SCREEN_WIDTH/2F - startButton.getWidth()/2F, 250);
-        startButton.addListener(new ClickListener(){
+
+        TextButton internalLevelButton = new TextButton("Выбрать уровень", buttonStyle);
+        stage.addActor(internalLevelButton);
+        internalLevelButton.setPosition(startButton.getX()+startButton.getWidth() + 10, startButton.getY() + startButton.getHeight()/2 + 5);
+        internalLevelButton.setVisible(false);
+        internalLevelButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
-
                 game.setScreen(chooseLevelScreen);
             }
         });
 
-        TextButton createLevelButton = new TextButton("Create Level", buttonStyle);
+        TextButton localLevelButton = new TextButton("Свои уровни", buttonStyle);
+        stage.addActor(localLevelButton);
+        localLevelButton.setPosition(startButton.getX()+startButton.getWidth() + 10, startButton.getY() + startButton.getHeight()/2 - localLevelButton.getHeight() - 5);
+        localLevelButton.setVisible(false);
+        localLevelButton.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                game.setScreen(localLevelScreen);
+            }
+        });
+
+        startButton.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                startButtonPressed = !startButtonPressed;
+                internalLevelButton.setVisible(startButtonPressed);
+                localLevelButton.setVisible(startButtonPressed);
+            }
+        });
+
+        TextButton createLevelButton = new TextButton("Создать уровень", buttonStyle);
         stage.addActor(createLevelButton);
-        createLevelButton.setPosition(MainGame.SCREEN_WIDTH/2 - startButton.getWidth()/2, 150);
+        createLevelButton.setPosition(MainGame.SCREEN_WIDTH/2F - startButton.getWidth()/2, 150);
         createLevelButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
-
                 game.setScreen(createLevelScreen);
             }
         });
 
+        TextButton infoButton = new TextButton("Как играть?", buttonStyle);
+        stage.addActor(infoButton);
+        infoButton.setPosition(MainGame.SCREEN_WIDTH/2F - startButton.getWidth()/2F, 50);
+        infoButton.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                game.setScreen(infoScreen);
+            }
+        });
 
     }
+
 
     @Override
     public void render(float delta) {

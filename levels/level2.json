@@ -1,0 +1,110 @@
+[
+{
+	class: ru.konovalovartyom.crazymachine.SaveActor
+	actorType: DESK
+	x: 618
+	y: 397.00003
+	angle: 0
+	isNeedToWin: false
+	toInventory: false
+}
+{
+	class: ru.konovalovartyom.crazymachine.SaveActor
+	actorType: DOMINO
+	x: 902
+	y: 422.00003
+	angle: 0
+	isNeedToWin: false
+	toInventory: false
+}
+{
+	class: ru.konovalovartyom.crazymachine.SaveActor
+	actorType: DOMINO
+	x: 859
+	y: 422.00006
+	angle: 0
+	isNeedToWin: false
+	toInventory: true
+}
+{
+	class: ru.konovalovartyom.crazymachine.SaveActor
+	actorType: DOMINO
+	x: 807
+	y: 421
+	angle: 0
+	isNeedToWin: false
+	toInventory: true
+}
+{
+	class: ru.konovalovartyom.crazymachine.SaveActor
+	actorType: DOMINO
+	x: 755
+	y: 421.00006
+	angle: 0
+	isNeedToWin: false
+	toInventory: true
+}
+{
+	class: ru.konovalovartyom.crazymachine.SaveActor
+	actorType: DOMINO
+	x: 702
+	y: 422.00003
+	angle: 0
+	isNeedToWin: false
+	toInventory: false
+}
+{
+	class: ru.konovalovartyom.crazymachine.SaveActor
+	actorType: BALL
+	x: 883
+	y: 584
+	angle: 0
+	isNeedToWin: false
+	toInventory: true
+}
+{
+	class: ru.konovalovartyom.crazymachine.SaveActor
+	actorType: DESK
+	x: 303.09058
+	y: 299.61334
+	angle: 20
+	isNeedToWin: false
+	toInventory: false
+}
+{
+	class: ru.konovalovartyom.crazymachine.SaveActor
+	actorType: BALL
+	x: 595
+	y: 422.99997
+	angle: 0
+	isNeedToWin: true
+	toInventory: false
+}
+{
+	class: ru.konovalovartyom.crazymachine.SaveActor
+	actorType: DESK
+	x: 397
+	y: 526
+	angle: 0
+	isNeedToWin: false
+	toInventory: false
+}
+{
+	class: ru.konovalovartyom.crazymachine.SaveActor
+	actorType: PUSHPIN
+	x: 323
+	y: 257
+	angle: 0
+	isNeedToWin: false
+	toInventory: false
+}
+{
+	class: ru.konovalovartyom.crazymachine.SaveActor
+	actorType: PUSHPIN
+	x: 206
+	y: 502.00003
+	angle: 0
+	isNeedToWin: false
+	toInventory: false
+}
+]

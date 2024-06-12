@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -32,7 +33,11 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.Vector;
+
+import javax.swing.JSpinner;
 
 public class PlayScreen implements Screen {
     private MainGame game;
@@ -43,12 +48,15 @@ public class PlayScreen implements Screen {
     private int finishedCount = 0;
     private World world;
     private Box2DDebugRenderer debugRenderer;
+    private final ShapeRenderer shapeRenderer = new ShapeRenderer();
+    private ArrayList<Vector2> finishLineVert;
     private OrthographicCamera camera;
     private final Set<DragAndDropActor> elements;
     private Array<Body> bodies = new Array<>();
     private Stage stage;
     private Viewport viewport;
     private WinActor winActor;
+    private ArrayList<Body> bodiesToRemove = new ArrayList<>();
     public static final float nextWidth = MainGame.SCREEN_WIDTH/(2*PPM);
     public static final float nextHeight = MainGame.SCREEN_HEIGHT/(2*PPM);
 
@@ -75,7 +83,7 @@ public class PlayScreen implements Screen {
 //        camera.position.set( MainGame.SCREEN_WIDTH / (2 * PPM), MainGame.SCREEN_HEIGHT / (2 * PPM), 0);
 //        camera.update();
 
-        BackgroundActor backgroundActor = new BackgroundActor(new Texture("Textures/background_gamearea.jpg"));
+        BackgroundActor backgroundActor = new BackgroundActor(new Texture("Textures/background_gamearea.png"));
         stage.addActor(backgroundActor);
 
         ImageButton.ImageButtonStyle backButtonStyle = new ImageButton.ImageButtonStyle();
@@ -99,7 +107,7 @@ public class PlayScreen implements Screen {
             if(element.NeedToWin) ++winCount;
         }
         createFinishLine();
-        winActor = new WinActor(startScreen, game);
+        winActor = new WinActor(startScreen, game, firstScreen);
         stage.addActor(winActor);
         winActor.setVisible(false);
     }
@@ -150,7 +158,7 @@ public class PlayScreen implements Screen {
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = circleShape;
         fixtureDef.density = 0.5F;
-        fixtureDef.friction = 0.4F;
+        fixtureDef.friction = 0.2F;
         fixtureDef.restitution = 0.5F;
 
         BodyData data = new BodyData(element.thingTypeEnum, element.NeedToWin, textureActor);
@@ -199,7 +207,7 @@ public class PlayScreen implements Screen {
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = circleShape;
-        fixtureDef.density = 0.005F;
+        fixtureDef.density = 0.05F;
         fixtureDef.friction = 1F;
         fixtureDef.restitution = 0.1F;
 
@@ -224,7 +232,7 @@ public class PlayScreen implements Screen {
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
-        fixtureDef.density = 0.5f;
+        fixtureDef.density = 0.5F;
         fixtureDef.friction = 0.6F;
         fixtureDef.restitution = 0f;
 
@@ -233,6 +241,7 @@ public class PlayScreen implements Screen {
         bodies.add(body);
 
         Fixture fixture = body.createFixture(fixtureDef);
+        System.out.println(body.getMass());
         shape.dispose();
     }
 
@@ -242,38 +251,49 @@ public class PlayScreen implements Screen {
 
         Body body = world.createBody(bodyDef);
 
-//        Vector2[] vertices = new Vector2[]{
-//            new Vector2(83/PPM, 19/PPM),
-//            new Vector2(94/PPM, 100/PPM),
-//            new Vector2(25/PPM, 103/PPM),
-//            new Vector2(6/PPM, 95/PPM),
-//            new Vector2(0/PPM, 123/PPM),
-//            new Vector2(5/PPM, 147/PPM),
-//            new Vector2(24/PPM, 139/PPM),
-//            new Vector2(116/PPM, 148/PPM),
-//            new Vector2(144/PPM, 148/PPM),
-//            new Vector2(150/PPM, 128/PPM),
-//            new Vector2(143/PPM, 100/PPM),
-//            new Vector2(117/PPM, 90/PPM),
-//            new Vector2(107/PPM, 26/PPM),
-//            new Vector2(83/PPM, 19/PPM),
-//        };
         PolygonShape shape = new PolygonShape();
-        shape.setAsBox(element.getWidth()/(4*PPM), element.getHeight()/(2.5F*PPM));
+        shape.setAsBox(element.getWidth()*2/PPM, element.getHeight()/(4F*PPM), new Vector2(2*element.getWidth()/PPM, element.getHeight()/PPM-2*element.getHeight()/(2.5F*PPM)), 0);
+
         body.setTransform((element.getX() + element.getWidth()/2)/PPM, (element.getY() + element.getHeight()/2)/PPM, element.getRotation()*3.14F/180);
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
-        fixtureDef.density = 0.5f;
-        fixtureDef.friction = 0.6F;
-        fixtureDef.restitution = 0f;
-
+        fixtureDef.isSensor = true;
         BodyData data = new BodyData(element.thingTypeEnum, element.NeedToWin, textureActor);
         body.setUserData(data);
         bodies.add(body);
+        System.out.println(body.getTransform().getOrientation());
 
         Fixture fixture = body.createFixture(fixtureDef);
+
+        Vector2 orientation = body.getTransform().getOrientation();
+        Vector2 firstPoint = new Vector2(body.getPosition().x -orientation.x/2F, body.getPosition().y-orientation.y/2F);
+        createAirBall(firstPoint, orientation);
         shape.dispose();
+    }
+
+    private void createAirBall(Vector2 startPosition, Vector2 dir){
+        float airBallRadius = 50/PPM;
+        BodyDef bodyDef = new BodyDef();
+        bodyDef.type = BodyDef.BodyType.DynamicBody;
+        Body body = world.createBody(bodyDef);
+        body.setTransform(startPosition, 0);
+        body.setGravityScale(0);
+        body.setLinearVelocity(dir.x*100, dir.y*100);
+        CircleShape circleShape = new CircleShape();
+        circleShape.setRadius(airBallRadius);
+        FixtureDef fixtureDef = new FixtureDef();
+        fixtureDef.shape = circleShape;
+        fixtureDef.isSensor = true;
+
+        BodyData data = new BodyData(ThingTypeEnum.AIRBALL, false, null);
+        data.setDir(dir);
+        data.setStartPosition(startPosition);
+        body.setUserData(data);
+
+        Fixture fixture = body.createFixture(fixtureDef);
+        circleShape.dispose();
+
     }
 
     private void createFinishLine(){
@@ -295,6 +315,7 @@ public class PlayScreen implements Screen {
                     vert.add(new Vector2(element.getX()/PPM, element.getY()/PPM));
                 }
             }
+            finishLineVert = vert;
             Vector2[] vertices = vert.toArray(new Vector2[0]);
             shape.createChain(vertices);
             FixtureDef fixtureDef = new FixtureDef();
@@ -313,6 +334,16 @@ public class PlayScreen implements Screen {
 
     @Override
     public void render(float delta) {
+//        Vector2 prev = null;
+//        for(Vector2 vert:finishLineVert){
+//            if(prev != null){
+//                shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+//                shapeRenderer.setColor(1, 0, 0, 1); // Red line
+//                shapeRenderer.rectLine(prev, vert, 10);
+//                shapeRenderer.end();
+//            }
+//            prev = vert;
+//        }
         ScreenUtils.clear(Color.CLEAR);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 //        debugRenderer.render(world, camera.combined);
@@ -323,11 +354,37 @@ public class PlayScreen implements Screen {
             if(bodyData.getTypeEnum() != ThingTypeEnum.BALLOON){
                 textureActor.setRotation((float) Math.toDegrees(body.getAngle()));
             }
+//            if(bodyData.getTypeEnum() == ThingTypeEnum.FAN){
+//                Vector2 orientation = body.getTransform().getOrientation();
+//                Vector2 firstPoint = new Vector2(body.getPosition().x -orientation.x/2F, body.getPosition().y-orientation.y/2F);
+//                createAirBall(firstPoint, orientation);
+//            }
             textureActor.setPosition(body.getPosition().x*PPM-textureActor.getWidth()/2, body.getPosition().y*PPM-textureActor.getHeight()/2);
         }
+
+        if(!world.isLocked()){
+            for(int i = bodiesToRemove.size() - 1; i >= 0; i--){
+                Body body = bodiesToRemove.get(i);
+                if(body == null){
+                    bodiesToRemove.remove(i);
+                }
+                else{
+                    BodyData bodyData = (BodyData) body.getUserData();
+                    if(bodyData != null){
+                        createAirBall(bodyData.getStartPosition(), bodyData.getDir());
+                        world.destroyBody(body);
+                        bodiesToRemove.remove(i);
+                    }
+
+                }
+            }
+        }
+
         stage.act();
         stage.draw();
+
     }
+
 
     @Override
     public void resize(int width, int height) {
@@ -358,18 +415,49 @@ public class PlayScreen implements Screen {
         public void beginContact(Contact contact) {
             BodyData bodyAType = (BodyData) contact.getFixtureA().getBody().getUserData();
             BodyData bodyBType = (BodyData) contact.getFixtureB().getBody().getUserData();
+            BodyData currentStream = null;
 
+            if(bodyAType.getTypeEnum() == ThingTypeEnum.AIRBALL && bodyBType.getTypeEnum() != ThingTypeEnum.FAN){
+                bodiesToRemove.add(contact.getFixtureA().getBody());
+                Vector2 impulse = new Vector2(bodyAType.getDir().x/30, bodyAType.getDir().y/30);
+                contact.getFixtureB().getBody().applyLinearImpulse(impulse, contact.getFixtureB().getBody().getWorldCenter(), true);
+            }
+            if(bodyBType.getTypeEnum() == ThingTypeEnum.AIRBALL && bodyAType.getTypeEnum() != ThingTypeEnum.FAN){
+                bodiesToRemove.add(contact.getFixtureB().getBody());
+                Vector2 impulse = new Vector2(bodyBType.getDir().x/30, bodyBType.getDir().y/30);
+                contact.getFixtureA().getBody().applyLinearImpulse(impulse, contact.getFixtureA().getBody().getWorldCenter(), true);
+            }
 
             if(bodyAType.getTypeEnum() == ThingTypeEnum.FINISH_LINE && bodyBType.isNeedToWin()){
                 ++finishedCount;
             }
+
         }
 
         @Override
         public void endContact(Contact contact) {
+            BodyData bodyAType = (BodyData) contact.getFixtureA().getBody().getUserData();
+            BodyData bodyBType = (BodyData) contact.getFixtureB().getBody().getUserData();
+
             if(finishedCount == winCount && winCount > 0){
                 System.out.println("WIN");
                 winActor.setVisible(true);
+            }
+
+            if(bodyAType.getTypeEnum() == ThingTypeEnum.AIRBALL && bodyBType.getTypeEnum() == ThingTypeEnum.FAN){
+                Vector2 orientation = contact.getFixtureB().getBody().getTransform().getOrientation();
+                Vector2 firstPoint = new Vector2(contact.getFixtureB().getBody().getPosition().x -orientation.x/2F, contact.getFixtureB().getBody().getPosition().y-orientation.y/2F);
+
+//                createAirBall(firstPoint, orientation);
+                bodiesToRemove.add(contact.getFixtureA().getBody());
+                System.out.println(1111111);
+            }
+            if(bodyBType.getTypeEnum() == ThingTypeEnum.AIRBALL && bodyAType.getTypeEnum() == ThingTypeEnum.FAN){
+                Vector2 orientation = contact.getFixtureA().getBody().getTransform().getOrientation();
+                Vector2 firstPoint = new Vector2(contact.getFixtureA().getBody().getPosition().x -orientation.x/2F, contact.getFixtureA().getBody().getPosition().y-orientation.y/2F);
+//                createAirBall(firstPoint, orientation);
+                bodiesToRemove.add(contact.getFixtureB().getBody());
+                System.out.println(2222222);
             }
         }
 

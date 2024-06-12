@@ -34,9 +34,6 @@ public class DragAndDropActor extends Actor {
                         //addAction(Actions.scaleTo(1.1f, 1.1f, 0.25f));
                         grabOffsetX = x;
                         grabOffsetY = y;
-                        System.out.println(getWidth() + " " + getHeight());
-                        System.out.println(getOriginX() + " " + getOriginY());
-                        System.out.println(getX() + " " + getY());
                         return true;
                     }
 
