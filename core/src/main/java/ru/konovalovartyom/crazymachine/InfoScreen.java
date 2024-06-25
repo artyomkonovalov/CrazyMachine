@@ -33,11 +33,11 @@ public class InfoScreen implements Screen {
         pages.add(new OnlyTextureActor(new Texture("Textures/ManualPages/page3.png")));
         pages.add(new OnlyTextureActor(new Texture("Textures/ManualPages/page4.png")));
         pages.add(new OnlyTextureActor(new Texture("Textures/ManualPages/page5.png")));
-        currentPage = pages.listIterator();
     }
 
     @Override
     public void show() {
+        currentPage = pages.listIterator();
         viewport = new FitViewport(MainGame.SCREEN_WIDTH, MainGame.SCREEN_HEIGHT);
         stage = new Stage(viewport);
         Gdx.input.setInputProcessor(stage);
@@ -66,6 +66,7 @@ public class InfoScreen implements Screen {
             stage.addActor(actor);
             actor.setVisible(false);
         }
+        currentPage.next().setVisible(true);
         ImageButton.ImageButtonStyle nextStyle = new ImageButton.ImageButtonStyle();
         nextStyle.up = new TextureRegionDrawable(new Texture("Textures/forwardbutton_normal(wood).png"));
         nextStyle.down = new TextureRegionDrawable(new Texture("Textures/forwardbutton_active(wood).png"));
@@ -105,7 +106,7 @@ public class InfoScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
-
+        viewport.update(width, height);
     }
 
     @Override

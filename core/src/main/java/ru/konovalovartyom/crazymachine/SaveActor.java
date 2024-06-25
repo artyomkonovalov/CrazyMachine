@@ -8,6 +8,7 @@ public class SaveActor {
     private float angle;
     private boolean isNeedToWin;
     private boolean toInventory;
+    private String task;
 
     public SaveActor(ThingTypeEnum actorType, float x, float y, float angle, boolean isNeedToWin, boolean toInventory) {
         this.actorType = actorType;
@@ -40,5 +41,13 @@ public class SaveActor {
 
     public boolean isToInventory() {
         return toInventory;
+    }
+
+    public void setTask(String task) {
+        this.task = task;
+    }
+
+    public String getTask() {
+        return task;
     }
 }

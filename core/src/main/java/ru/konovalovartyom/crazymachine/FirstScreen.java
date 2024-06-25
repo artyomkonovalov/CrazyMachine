@@ -1,18 +1,23 @@
 package ru.konovalovartyom.crazymachine;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Json;
@@ -23,8 +28,10 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -54,12 +61,19 @@ public class FirstScreen implements Screen, RotateListener{
     private CheckBox needToWin;
 
     private CheckBox toInventory;
+    private TextArea task;
+    private String textTask;
+    private FileHandle fontFile;
+    private BitmapFont font;
 
     //Констркутор для экрана создания уровня
     public FirstScreen(StartScreen startScreen, MainGame game, boolean isCreateLevelScreen){
         this.startScreen = startScreen;
         this.game = game;
         this.isCreateLevelScreen = isCreateLevelScreen;
+        fontFile = Gdx.files.internal("Textures/vag-world-bold.fnt");
+        font = new BitmapFont(fontFile);
+        font.setColor(0, 0, 0, 1);
     }
     //Конструктор для игрового экрана
     public FirstScreen(StartScreen startScreen, MainGame game, boolean isCreateLevelScreen, FileHandle file){
@@ -67,6 +81,9 @@ public class FirstScreen implements Screen, RotateListener{
         this.game = game;
         this.isCreateLevelScreen = isCreateLevelScreen;
         this.file = file;
+        fontFile = Gdx.files.internal("Textures/vag-world-bold.fnt");
+        font = new BitmapFont(fontFile);
+        font.setColor(0, 0, 0, 1);
     }
 
 
@@ -119,7 +136,7 @@ public class FirstScreen implements Screen, RotateListener{
         startButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                PlayScreen playScreen = new PlayScreen(elements, FirstScreen.this, startScreen, game);
+                PlayScreen playScreen = new PlayScreen(elements, inventoryActor, FirstScreen.this, startScreen, game);
                 game.setScreen(playScreen);
                 dispose();
             }
@@ -143,7 +160,11 @@ public class FirstScreen implements Screen, RotateListener{
         if(isCreateLevelScreen){
             //Интерфейс для редактирования уровня
 
-            needToWin = new CheckBox("Need to win?", new Skin(Gdx.files.internal("ui/uiskin.json")));
+            TextureRegionDrawable checkboxOff = new TextureRegionDrawable(new Texture("Textures/checkbox_up.png"));
+            TextureRegionDrawable checkboxOn = new TextureRegionDrawable(new Texture("Textures/checkbox_down.png"));
+            CheckBox.CheckBoxStyle checkBoxStyle = new CheckBox.CheckBoxStyle(checkboxOff, checkboxOn, font, new Color(0, 0, 0, 1));
+            //new Skin(Gdx.files.internal("ui/uiskin.json"))
+            needToWin = new CheckBox("Need to win?", checkBoxStyle);
             needToWin.setChecked(false);
             stage.addActor(needToWin);
             needToWin.addListener(new ClickListener(){
@@ -154,8 +175,8 @@ public class FirstScreen implements Screen, RotateListener{
                     }
                 }
             });
-
-            toInventory = new CheckBox("To inventory?", new Skin(Gdx.files.internal("ui/uiskin.json")));
+            //new Skin(Gdx.files.internal("ui/uiskin.json"))
+            toInventory = new CheckBox("To inventory?", checkBoxStyle);
             toInventory.setChecked(false);
             stage.addActor(toInventory);
             toInventory.addListener(new ClickListener(){
@@ -167,32 +188,86 @@ public class FirstScreen implements Screen, RotateListener{
                 }
             });
 
+            ImageButton.ImageButtonStyle showTextAreaStyle = new ImageButton.ImageButtonStyle();
+            showTextAreaStyle.up = new TextureRegionDrawable(new Texture("Textures/showTextButton_normal.png"));
+            showTextAreaStyle.down = new TextureRegionDrawable(new Texture("Textures/showTextButton_active.png"));
+            ImageButton showTextArea = new ImageButton(showTextAreaStyle);
+            showTextArea.addListener(new ClickListener(){
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    task.setVisible(!task.isVisible());
+                }
+            });
+            showTextArea.setPosition(backButton.getX(), backButton.getY()-showTextArea.getHeight()-5);
+            stage.addActor(showTextArea);
+
+            TextField.TextFieldStyle textFieldStyle = new TextField.TextFieldStyle();
+            Texture backgroundField = new Texture("Textures/textBox.png");
+            textFieldStyle.background = new TextureRegionDrawable(backgroundField);
+            textFieldStyle.font = font;
+            textFieldStyle.fontColor = new Color(0, 0, 0, 1);
+
+            task = new TextArea("Задание уровня", textFieldStyle);
+            task.setWidth(backgroundField.getWidth());
+            task.setHeight(backgroundField.getHeight());
+            task.setPosition(showTextArea.getX() + showTextArea.getWidth() + 5, MainGame.SCREEN_HEIGHT-task.getHeight());
+            stage.addActor(task);
+            task.setVisible(false);
+
             for(ThingTypeEnum elementType:ThingTypeEnum.values()){
-                if(elementType != ThingTypeEnum.FINISH_LINE && elementType != ThingTypeEnum.AIRBALL) {
+                if(elementType != ThingTypeEnum.FINISH_LINE && elementType != ThingTypeEnum.AIRBALL && elementType != ThingTypeEnum.TEXTFIELD) {
                     DragAndDropActor currentElement = new DragAndDropActor(textureMap, elementType, inventoryActor, elements, this);
                     inventoryActor.addItem(currentElement);
                     stage.addActor(currentElement);
                 }
             }
-            TaskInputListener listener = new TaskInputListener();
-            Gdx.input.getTextInput(listener, "Dialog Title", "Initial Textfield Value", "Lol");
         }
 
         if(!isCreateLevelScreen){
             String data = file.readString();
             JsonValue root = new JsonReader().parse(data);
             for(JsonValue entry : root){
-                DragAndDropActor actor = new DragAndDropActor(textureMap, stringToThingTypeEnumMap.get(entry.getString("actorType")), inventoryActor, elements, this, entry.get("isNeedToWin").asBoolean(), entry.get("toInventory").asBoolean());
-                stage.addActor(actor);
-                actor.setPosition(entry.get("x").asInt(), entry.get("y").asInt());
-                if(actor.toInventory){
-                    inventoryActor.addItem(actor);
+                if(entry.getString("task") != null) {
+                    textTask = entry.getString("task");
                 }
                 else{
-                    elements.add(actor);
-                    actor.setRotation(entry.get("angle").asInt());
+                    DragAndDropActor actor = new DragAndDropActor(textureMap, stringToThingTypeEnumMap.get(entry.getString("actorType")), inventoryActor, elements, this, entry.get("isNeedToWin").asBoolean(), entry.get("toInventory").asBoolean());
+                    stage.addActor(actor);
+                    actor.setPosition(entry.get("x").asInt(), entry.get("y").asInt());
+                    if(actor.toInventory){
+                        inventoryActor.addItem(actor);
+                    }
+                    else{
+                        elements.add(actor);
+                        actor.setRotation(entry.get("angle").asInt());
+                    }
                 }
             }
+            ImageButton.ImageButtonStyle showTextAreaStyle = new ImageButton.ImageButtonStyle();
+            showTextAreaStyle.up = new TextureRegionDrawable(new Texture("Textures/showTextButton_normal.png"));
+            showTextAreaStyle.down = new TextureRegionDrawable(new Texture("Textures/showTextButton_active.png"));
+            ImageButton showTextArea = new ImageButton(showTextAreaStyle);
+            showTextArea.addListener(new ClickListener(){
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    task.setVisible(!task.isVisible());
+                }
+            });
+
+            TextField.TextFieldStyle textFieldStyle = new TextField.TextFieldStyle();
+            Texture backgroundField = new Texture("Textures/textBox.png");
+            textFieldStyle.background = new TextureRegionDrawable(backgroundField);
+            textFieldStyle.font = font;
+            textFieldStyle.fontColor = new Color(0, 0, 0, 1);
+
+            task = new TextArea(textTask, textFieldStyle);
+            task.setWidth(backgroundField.getWidth());
+            task.setHeight(backgroundField.getHeight());
+            task.setPosition(showTextArea.getX() + showTextArea.getWidth() + 5, MainGame.SCREEN_HEIGHT-task.getHeight());
+            stage.addActor(task);
+
+            showTextArea.setPosition(backButton.getX(), backButton.getY()-showTextArea.getHeight()-5);
+            stage.addActor(showTextArea);
         }
     }
 
@@ -213,7 +288,7 @@ public class FirstScreen implements Screen, RotateListener{
         }
         inventoryActor.clearItems();
         for(ThingTypeEnum elementType:ThingTypeEnum.values()){
-            if(elementType != ThingTypeEnum.FINISH_LINE && elementType != ThingTypeEnum.AIRBALL) {
+            if(elementType != ThingTypeEnum.FINISH_LINE && elementType != ThingTypeEnum.AIRBALL && elementType != ThingTypeEnum.TEXTFIELD) {
                 DragAndDropActor currentElement = new DragAndDropActor(textureMap, elementType, inventoryActor, elements, this);
                 inventoryActor.addItem(currentElement);
                 stage.addActor(currentElement);
@@ -229,13 +304,21 @@ public class FirstScreen implements Screen, RotateListener{
             actors.add(saveActor);
         }
         FileHandle directory = Gdx.files.local("levels/");
-        FileHandle[] files = directory.list();
+//        FileHandle[] files = directory.list();
 //        directory.emptyDirectory();
-        for(int i = 0; i < filesCount(); ++i){
-            String levelName = "level" + i + ".json";
-            directory.child(levelName).writeString(files[i].readString(), false);
-        }
-        String levelName = "level" + filesCount() + ".json";
+//        for(int i = 0; i < filesCount(); ++i){
+//            String levelName = "level" + i + ".json";
+//            directory.child(levelName).writeString(files[i].readString(), false);
+//        }
+        SaveActor taskSave = new SaveActor(ThingTypeEnum.TEXTFIELD, 0, 0, 0, false, false);
+        String text = task.getText();
+//        if(Gdx.app.getType() == Application.ApplicationType.Desktop){
+//
+//        }
+        taskSave.setTask(text);
+        actors.add(taskSave);
+        Date date = new Date();
+        String levelName = "level" + date.getTime() + ".json";
         String data = json.prettyPrint(actors);
         System.out.println(data);
         directory.child(levelName).writeString(data, false);
@@ -271,7 +354,7 @@ public class FirstScreen implements Screen, RotateListener{
             buttons.setVisible(false);
         }
         if(isCreateLevelScreen){
-            if(isSelected != null && isSelected.thingTypeEnum == ThingTypeEnum.BALL){
+            if(isSelected != null && (isSelected.thingTypeEnum == ThingTypeEnum.BALL || isSelected.thingTypeEnum == ThingTypeEnum.BALLOON || isSelected.thingTypeEnum == ThingTypeEnum.DOMINO)){
                 needToWin.setVisible(isSelected.isVisible());
                 needToWin.setPosition(isSelected.getX()+isSelected.getWidth(), isSelected.getY()+isSelected.getHeight());
                 needToWin.setChecked(isSelected.NeedToWin);

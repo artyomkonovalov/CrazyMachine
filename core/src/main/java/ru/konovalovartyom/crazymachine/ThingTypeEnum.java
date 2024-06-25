@@ -9,4 +9,5 @@ public enum ThingTypeEnum {
     FAN,
     FINISH_LINE,
     AIRBALL,
+    TEXTFIELD,
 }

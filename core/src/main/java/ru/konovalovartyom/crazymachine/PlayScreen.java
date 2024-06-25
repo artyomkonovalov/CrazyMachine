@@ -60,11 +60,17 @@ public class PlayScreen implements Screen {
     public static final float nextWidth = MainGame.SCREEN_WIDTH/(2*PPM);
     public static final float nextHeight = MainGame.SCREEN_HEIGHT/(2*PPM);
 
-    public PlayScreen(Set<DragAndDropActor> elements, FirstScreen firstScreen, StartScreen startScreen, MainGame game) {
+    public PlayScreen(Set<DragAndDropActor> elements, InventoryActor inventoryActor, FirstScreen firstScreen, StartScreen startScreen, MainGame game) {
         this.elements = elements;
         this.startScreen = startScreen;
         this.game = game;
         this.firstScreen = firstScreen;
+        for(DragAndDropActor element : elements){
+            if(element.NeedToWin) ++winCount;
+        }
+        for(DragAndDropActor element : inventoryActor.getItems()){
+            if(element.NeedToWin) ++winCount;
+        }
     }
 
     @Override
@@ -104,7 +110,6 @@ public class PlayScreen implements Screen {
 
         for(DragAndDropActor element: elements){
             createBodies(element);
-            if(element.NeedToWin) ++winCount;
         }
         createFinishLine();
         winActor = new WinActor(startScreen, game, firstScreen);
@@ -273,7 +278,7 @@ public class PlayScreen implements Screen {
     }
 
     private void createAirBall(Vector2 startPosition, Vector2 dir){
-        float airBallRadius = 50/PPM;
+        float airBallRadius = 30/PPM;
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         Body body = world.createBody(bodyDef);
@@ -293,7 +298,6 @@ public class PlayScreen implements Screen {
 
         Fixture fixture = body.createFixture(fixtureDef);
         circleShape.dispose();
-
     }
 
     private void createFinishLine(){
@@ -419,12 +423,12 @@ public class PlayScreen implements Screen {
 
             if(bodyAType.getTypeEnum() == ThingTypeEnum.AIRBALL && bodyBType.getTypeEnum() != ThingTypeEnum.FAN){
                 bodiesToRemove.add(contact.getFixtureA().getBody());
-                Vector2 impulse = new Vector2(bodyAType.getDir().x/30, bodyAType.getDir().y/30);
+                Vector2 impulse = new Vector2(bodyAType.getDir().x/20, bodyAType.getDir().y/20);
                 contact.getFixtureB().getBody().applyLinearImpulse(impulse, contact.getFixtureB().getBody().getWorldCenter(), true);
             }
             if(bodyBType.getTypeEnum() == ThingTypeEnum.AIRBALL && bodyAType.getTypeEnum() != ThingTypeEnum.FAN){
                 bodiesToRemove.add(contact.getFixtureB().getBody());
-                Vector2 impulse = new Vector2(bodyBType.getDir().x/30, bodyBType.getDir().y/30);
+                Vector2 impulse = new Vector2(bodyBType.getDir().x/20, bodyBType.getDir().y/20);
                 contact.getFixtureA().getBody().applyLinearImpulse(impulse, contact.getFixtureA().getBody().getWorldCenter(), true);
             }
 
@@ -438,10 +442,11 @@ public class PlayScreen implements Screen {
         public void endContact(Contact contact) {
             BodyData bodyAType = (BodyData) contact.getFixtureA().getBody().getUserData();
             BodyData bodyBType = (BodyData) contact.getFixtureB().getBody().getUserData();
-
-            if(finishedCount == winCount && winCount > 0){
-                System.out.println("WIN");
-                winActor.setVisible(true);
+            if(bodyAType.getTypeEnum() == ThingTypeEnum.FINISH_LINE || bodyBType.getTypeEnum() == ThingTypeEnum.FINISH_LINE) {
+                if (finishedCount == winCount && winCount > 0) {
+                    System.out.println("WIN");
+                    winActor.setVisible(true);
+                }
             }
 
             if(bodyAType.getTypeEnum() == ThingTypeEnum.AIRBALL && bodyBType.getTypeEnum() == ThingTypeEnum.FAN){
@@ -450,14 +455,12 @@ public class PlayScreen implements Screen {
 
 //                createAirBall(firstPoint, orientation);
                 bodiesToRemove.add(contact.getFixtureA().getBody());
-                System.out.println(1111111);
             }
             if(bodyBType.getTypeEnum() == ThingTypeEnum.AIRBALL && bodyAType.getTypeEnum() == ThingTypeEnum.FAN){
                 Vector2 orientation = contact.getFixtureA().getBody().getTransform().getOrientation();
                 Vector2 firstPoint = new Vector2(contact.getFixtureA().getBody().getPosition().x -orientation.x/2F, contact.getFixtureA().getBody().getPosition().y-orientation.y/2F);
 //                createAirBall(firstPoint, orientation);
                 bodiesToRemove.add(contact.getFixtureB().getBody());
-                System.out.println(2222222);
             }
         }
 

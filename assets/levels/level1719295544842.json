@@ -1,38 +1,52 @@
 [
 {
 	class: ru.konovalovartyom.crazymachine.SaveActor
-	actorType: DESK
-	x: 75
-	y: 407
-	angle: -20
-	isNeedToWin: false
-	toInventory: true
-}
-{
-	class: ru.konovalovartyom.crazymachine.SaveActor
-	actorType: BALL
-	x: 188
-	y: 549
+	actorType: BALLOON
+	x: 504
+	y: 103.99997
 	angle: 0
 	isNeedToWin: true
 	toInventory: false
+	task: null
+}
+{
+	class: ru.konovalovartyom.crazymachine.SaveActor
+	actorType: DESK
+	x: 433
+	y: 387.00003
+	angle: -25
+	isNeedToWin: false
+	toInventory: false
+	task: null
 }
 {
 	class: ru.konovalovartyom.crazymachine.SaveActor
 	actorType: PUSHPIN
-	x: 668
-	y: 89.999985
+	x: 464
+	y: 457.00006
 	angle: 0
 	isNeedToWin: false
 	toInventory: false
+	task: null
 }
 {
 	class: ru.konovalovartyom.crazymachine.SaveActor
 	actorType: PUSHPIN
-	x: 971
-	y: 454.00006
+	x: 37
+	y: 473
 	angle: 0
 	isNeedToWin: false
 	toInventory: false
+	task: null
+}
+{
+	class: ru.konovalovartyom.crazymachine.SaveActor
+	actorType: TEXTFIELD
+	x: 0
+	y: 0
+	angle: 0
+	isNeedToWin: false
+	toInventory: false
+	task: Абоба
 }
 ]

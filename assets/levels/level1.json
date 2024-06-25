@@ -2,55 +2,71 @@
 {
 	class: ru.konovalovartyom.crazymachine.SaveActor
 	actorType: DESK
-	x: 112.259155
-	y: 386.84372
-	angle: -40
+	x: 74.86456
+	y: 323.4606
+	angle: -35
 	isNeedToWin: false
-	toInventory: false
+	toInventory: true
+	task: null
 }
 {
 	class: ru.konovalovartyom.crazymachine.SaveActor
 	actorType: DESK
-	x: 642.12885
-	y: 361.22986
+	x: 719.3955
+	y: 324.67273
 	angle: 35
 	isNeedToWin: false
-	toInventory: false
+	toInventory: true
+	task: null
 }
 {
 	class: ru.konovalovartyom.crazymachine.SaveActor
 	actorType: BALL
-	x: 736
-	y: 564
+	x: 811
+	y: 532
 	angle: 0
 	isNeedToWin: true
-	toInventory: true
+	toInventory: false
+	task: null
 }
 {
 	class: ru.konovalovartyom.crazymachine.SaveActor
 	actorType: BALL
-	x: 244
-	y: 562
+	x: 190
+	y: 554.00006
 	angle: 0
 	isNeedToWin: true
-	toInventory: true
+	toInventory: false
+	task: null
 }
 {
 	class: ru.konovalovartyom.crazymachine.SaveActor
 	actorType: PUSHPIN
-	x: 316
-	y: 268.00006
+	x: 709
+	y: 197.00002
 	angle: 0
 	isNeedToWin: false
 	toInventory: false
+	task: null
 }
 {
 	class: ru.konovalovartyom.crazymachine.SaveActor
 	actorType: PUSHPIN
-	x: 688
-	y: 266.00006
+	x: 355
+	y: 197
 	angle: 0
 	isNeedToWin: false
 	toInventory: false
+	task: null
+}
+{
+	class: ru.konovalovartyom.crazymachine.SaveActor
+	actorType: TEXTFIELD
+	x: 0
+	y: 0
+	angle: 0
+	isNeedToWin: false
+	toInventory: false
+	task: Footballs must cross the "finish"
 }
 ]
