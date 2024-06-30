@@ -20,8 +20,8 @@ public class RotateButtonsActor extends Group {
         this.rotateListener = rotateListener;
 
         ImageButton.ImageButtonStyle clockwiseButtonStyle = new ImageButton.ImageButtonStyle();
-        Texture clockwiseNormal = new Texture("Textures/rotatebutton_clockwise_normal.png");
-        Texture clockwiseActive = new Texture("Textures/rotatebutton_clockwise_active.png");
+        Texture clockwiseNormal = new Texture("Textures/rotatebutton_clockwise_normal(wood).png");
+        Texture clockwiseActive = new Texture("Textures/rotatebutton_clockwise_active(wood).png");
         clockwiseButtonStyle.up = new TextureRegionDrawable(clockwiseNormal);
         clockwiseButtonStyle.down = new TextureRegionDrawable(clockwiseActive);
         ImageButton clockwiseButton = new ImageButton(clockwiseButtonStyle);
@@ -34,8 +34,8 @@ public class RotateButtonsActor extends Group {
         });
 
         ImageButton.ImageButtonStyle anticlockwiseButtonStyle = new ImageButton.ImageButtonStyle();
-        Texture anticlockwiseNormal = new Texture("Textures/rotatebutton_anticlockwise_normal.png");
-        Texture anticlockwiseActive = new Texture("Textures/rotatebutton_anticlockwise_active.png");
+        Texture anticlockwiseNormal = new Texture("Textures/rotatebutton_anticlockwise_normal(wood).png");
+        Texture anticlockwiseActive = new Texture("Textures/rotatebutton_anticlockwise_active(wood).png");
         anticlockwiseButtonStyle.up = new TextureRegionDrawable(anticlockwiseNormal);
         anticlockwiseButtonStyle.down = new TextureRegionDrawable(anticlockwiseActive);
         ImageButton anticlockwiseButton = new ImageButton(anticlockwiseButtonStyle);

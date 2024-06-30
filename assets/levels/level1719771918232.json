@@ -1,109 +1,9 @@
 [
 {
 	class: ru.konovalovartyom.crazymachine.SaveActor
-	actorType: BALL
-	x: 660
-	y: 436.99994
-	angle: 0
-	isNeedToWin: true
-	toInventory: true
-	task: null
-}
-{
-	class: ru.konovalovartyom.crazymachine.SaveActor
-	actorType: BALLOON
-	x: 666
-	y: 251
-	angle: 0
-	isNeedToWin: true
-	toInventory: false
-	task: null
-}
-{
-	class: ru.konovalovartyom.crazymachine.SaveActor
-	actorType: BALLOON
-	x: 350
-	y: 286.00003
-	angle: 0
-	isNeedToWin: true
-	toInventory: false
-	task: null
-}
-{
-	class: ru.konovalovartyom.crazymachine.SaveActor
-	actorType: BALL
-	x: 348
-	y: 473.99988
-	angle: 0
-	isNeedToWin: true
-	toInventory: true
-	task: null
-}
-{
-	class: ru.konovalovartyom.crazymachine.SaveActor
-	actorType: BALL
-	x: 534
-	y: 532.99994
-	angle: 0
-	isNeedToWin: true
-	toInventory: true
-	task: null
-}
-{
-	class: ru.konovalovartyom.crazymachine.SaveActor
-	actorType: BALL
-	x: 209
-	y: 525
-	angle: 0
-	isNeedToWin: true
-	toInventory: true
-	task: null
-}
-{
-	class: ru.konovalovartyom.crazymachine.SaveActor
-	actorType: DOMINO
-	x: 553
-	y: 376
-	angle: 0
-	isNeedToWin: true
-	toInventory: false
-	task: null
-}
-{
-	class: ru.konovalovartyom.crazymachine.SaveActor
-	actorType: DOMINO
-	x: 816
-	y: 540
-	angle: 0
-	isNeedToWin: true
-	toInventory: false
-	task: null
-}
-{
-	class: ru.konovalovartyom.crazymachine.SaveActor
-	actorType: DOMINO
-	x: 354
-	y: 595
-	angle: 0
-	isNeedToWin: true
-	toInventory: false
-	task: null
-}
-{
-	class: ru.konovalovartyom.crazymachine.SaveActor
-	actorType: DOMINO
-	x: 208
-	y: 389
-	angle: 0
-	isNeedToWin: true
-	toInventory: false
-	task: null
-}
-{
-	class: ru.konovalovartyom.crazymachine.SaveActor
 	actorType: DESK
-	x: 49
-	y: 175.99997
+	x: -14
+	y: 216.00002
 	angle: -35
 	isNeedToWin: false
 	toInventory: false
@@ -112,8 +12,8 @@
 {
 	class: ru.konovalovartyom.crazymachine.SaveActor
 	actorType: DESK
-	x: 754
-	y: 148.99994
+	x: 751
+	y: 202.99997
 	angle: 30
 	isNeedToWin: false
 	toInventory: false
@@ -122,8 +22,8 @@
 {
 	class: ru.konovalovartyom.crazymachine.SaveActor
 	actorType: PUSHPIN
-	x: 249
-	y: 45.999985
+	x: 129
+	y: 83.999985
 	angle: 0
 	isNeedToWin: false
 	toInventory: false
@@ -132,11 +32,101 @@
 {
 	class: ru.konovalovartyom.crazymachine.SaveActor
 	actorType: PUSHPIN
-	x: 922
-	y: 45.999985
+	x: 839
+	y: 83.999985
 	angle: 0
 	isNeedToWin: false
 	toInventory: false
+	task: null
+}
+{
+	class: ru.konovalovartyom.crazymachine.SaveActor
+	actorType: BALLOON
+	x: 680
+	y: 222.99997
+	angle: 0
+	isNeedToWin: true
+	toInventory: false
+	task: null
+}
+{
+	class: ru.konovalovartyom.crazymachine.SaveActor
+	actorType: BALLOON
+	x: 466
+	y: 320.00003
+	angle: 0
+	isNeedToWin: true
+	toInventory: false
+	task: null
+}
+{
+	class: ru.konovalovartyom.crazymachine.SaveActor
+	actorType: BALLOON
+	x: 228
+	y: 284.00003
+	angle: 0
+	isNeedToWin: true
+	toInventory: false
+	task: null
+}
+{
+	class: ru.konovalovartyom.crazymachine.SaveActor
+	actorType: DOMINO
+	x: 725
+	y: 419.00003
+	angle: 0
+	isNeedToWin: true
+	toInventory: true
+	task: null
+}
+{
+	class: ru.konovalovartyom.crazymachine.SaveActor
+	actorType: DOMINO
+	x: 761
+	y: 423.00003
+	angle: 0
+	isNeedToWin: true
+	toInventory: true
+	task: null
+}
+{
+	class: ru.konovalovartyom.crazymachine.SaveActor
+	actorType: BALL
+	x: 478
+	y: 496.99994
+	angle: 0
+	isNeedToWin: true
+	toInventory: true
+	task: null
+}
+{
+	class: ru.konovalovartyom.crazymachine.SaveActor
+	actorType: BALL
+	x: 240
+	y: 454.99994
+	angle: 0
+	isNeedToWin: true
+	toInventory: true
+	task: null
+}
+{
+	class: ru.konovalovartyom.crazymachine.SaveActor
+	actorType: DOMINO
+	x: 490
+	y: 586
+	angle: 0
+	isNeedToWin: true
+	toInventory: true
+	task: null
+}
+{
+	class: ru.konovalovartyom.crazymachine.SaveActor
+	actorType: DOMINO
+	x: 281
+	y: 579
+	angle: 0
+	isNeedToWin: true
+	toInventory: true
 	task: null
 }
 {
@@ -147,6 +137,6 @@
 	angle: 0
 	isNeedToWin: false
 	toInventory: false
-	task: What a mess! Clean it up!
+	task: "Ну и бардак вы устроили! Пора прибраться. Уберите все предметы из инвентаря и игровой области (дайте им пройти между кнопками)"
 }
 ]

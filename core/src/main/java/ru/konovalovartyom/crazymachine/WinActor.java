@@ -12,7 +12,7 @@ public class WinActor extends Group {
     private Texture texture;
     private ImageButton backButton;
 
-    public WinActor(StartScreen screen, MainGame game, FirstScreen firstScreen) {
+    public WinActor(ChooseLevelScreen screen, MainGame game, FirstScreen firstScreen) {
         texture = new Texture("Textures/level_complete.png");
         setWidth(texture.getWidth());
         setHeight(texture.getHeight());

@@ -2,8 +2,8 @@
 {
 	class: ru.konovalovartyom.crazymachine.SaveActor
 	actorType: DESK
-	x: 511
-	y: 396
+	x: 505
+	y: 377.00003
 	angle: 0
 	isNeedToWin: false
 	toInventory: false
@@ -12,8 +12,8 @@
 {
 	class: ru.konovalovartyom.crazymachine.SaveActor
 	actorType: DESK
-	x: 462
-	y: 536
+	x: 419
+	y: 516
 	angle: 0
 	isNeedToWin: false
 	toInventory: false
@@ -21,19 +21,39 @@
 }
 {
 	class: ru.konovalovartyom.crazymachine.SaveActor
-	actorType: DOMINO
-	x: 780
-	y: 427
-	angle: 0
+	actorType: DESK
+	x: 164
+	y: 229.99997
+	angle: -25
 	isNeedToWin: false
 	toInventory: true
 	task: null
 }
 {
 	class: ru.konovalovartyom.crazymachine.SaveActor
+	actorType: PUSHPIN
+	x: 391
+	y: 95.999985
+	angle: 0
+	isNeedToWin: false
+	toInventory: false
+	task: null
+}
+{
+	class: ru.konovalovartyom.crazymachine.SaveActor
+	actorType: PUSHPIN
+	x: 710
+	y: 336.00003
+	angle: 0
+	isNeedToWin: false
+	toInventory: false
+	task: null
+}
+{
+	class: ru.konovalovartyom.crazymachine.SaveActor
 	actorType: BALL
-	x: 505
-	y: 425
+	x: 518
+	y: 404
 	angle: 0
 	isNeedToWin: true
 	toInventory: false
@@ -42,8 +62,18 @@
 {
 	class: ru.konovalovartyom.crazymachine.SaveActor
 	actorType: DOMINO
-	x: 673
-	y: 424
+	x: 662
+	y: 401.99997
+	angle: 0
+	isNeedToWin: false
+	toInventory: true
+	task: null
+}
+{
+	class: ru.konovalovartyom.crazymachine.SaveActor
+	actorType: DOMINO
+	x: 745
+	y: 404
 	angle: 0
 	isNeedToWin: false
 	toInventory: true
@@ -52,41 +82,11 @@
 {
 	class: ru.konovalovartyom.crazymachine.SaveActor
 	actorType: BALL
-	x: 784
-	y: 594.99994
+	x: 749
+	y: 560
 	angle: 0
 	isNeedToWin: false
 	toInventory: true
-	task: null
-}
-{
-	class: ru.konovalovartyom.crazymachine.SaveActor
-	actorType: DESK
-	x: 185
-	y: 286.99997
-	angle: -30
-	isNeedToWin: false
-	toInventory: false
-	task: null
-}
-{
-	class: ru.konovalovartyom.crazymachine.SaveActor
-	actorType: PUSHPIN
-	x: 519
-	y: 190
-	angle: 0
-	isNeedToWin: false
-	toInventory: false
-	task: null
-}
-{
-	class: ru.konovalovartyom.crazymachine.SaveActor
-	actorType: PUSHPIN
-	x: 551
-	y: 379
-	angle: 0
-	isNeedToWin: false
-	toInventory: false
 	task: null
 }
 {
@@ -96,7 +96,7 @@
 	y: 0
 	angle: 0
 	isNeedToWin: false
-	toInventory: false,
-	task: Throw the ball off the shelf
+	toInventory: false
+	task: "Нужно скинуть мяч, лежащий на полке, чтобы он прошёл между кнопками"
 }
 ]

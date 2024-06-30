@@ -2,18 +2,8 @@
 {
 	class: ru.konovalovartyom.crazymachine.SaveActor
 	actorType: DESK
-	x: 273.73206
-	y: 195.8038
-	angle: -90
-	isNeedToWin: false
-	toInventory: true
-	task: null
-}
-{
-	class: ru.konovalovartyom.crazymachine.SaveActor
-	actorType: FAN
-	x: 54
-	y: 29
+	x: 319
+	y: 460
 	angle: 0
 	isNeedToWin: false
 	toInventory: false
@@ -21,29 +11,9 @@
 }
 {
 	class: ru.konovalovartyom.crazymachine.SaveActor
-	actorType: FAN
-	x: 37
-	y: 213
-	angle: 0
-	isNeedToWin: false
-	toInventory: false
-	task: null
-}
-{
-	class: ru.konovalovartyom.crazymachine.SaveActor
-	actorType: FAN
-	x: 38
-	y: 412.00006
-	angle: 0
-	isNeedToWin: false
-	toInventory: false
-	task: null
-}
-{
-	class: ru.konovalovartyom.crazymachine.SaveActor
-	actorType: BALLOON
-	x: 479
-	y: 27
+	actorType: BALL
+	x: 442
+	y: 493.00006
 	angle: 0
 	isNeedToWin: true
 	toInventory: false
@@ -51,9 +21,29 @@
 }
 {
 	class: ru.konovalovartyom.crazymachine.SaveActor
+	actorType: FAN
+	x: 95
+	y: 451
+	angle: 0
+	isNeedToWin: false
+	toInventory: true
+	task: null
+}
+{
+	class: ru.konovalovartyom.crazymachine.SaveActor
+	actorType: DESK
+	x: 675
+	y: 263.99997
+	angle: 25
+	isNeedToWin: false
+	toInventory: true
+	task: null
+}
+{
+	class: ru.konovalovartyom.crazymachine.SaveActor
 	actorType: PUSHPIN
-	x: 981
-	y: 651.00006
+	x: 567
+	y: 51.999985
 	angle: 0
 	isNeedToWin: false
 	toInventory: false
@@ -62,8 +52,8 @@
 {
 	class: ru.konovalovartyom.crazymachine.SaveActor
 	actorType: PUSHPIN
-	x: 78
-	y: 647
+	x: 167
+	y: 361
 	angle: 0
 	isNeedToWin: false
 	toInventory: false
@@ -77,6 +67,6 @@
 	angle: 0
 	isNeedToWin: false
 	toInventory: false
-	task: Balloon must cross the "finish" safely
+	task: "Мячик должен проскочить между кнопками"
 }
 ]

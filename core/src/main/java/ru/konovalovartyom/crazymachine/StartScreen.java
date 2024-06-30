@@ -5,11 +5,13 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
@@ -21,8 +23,10 @@ public class StartScreen implements Screen {
 
     private FirstScreen createLevelScreen;
     private ChooseLevelScreen chooseLevelScreen;
+
     private ChooseLevelScreen localLevelScreen;
     private InfoScreen infoScreen;
+
 
     public StartScreen(MainGame game) {
         this.game = game;
@@ -46,13 +50,13 @@ public class StartScreen implements Screen {
         stage.addActor(logo);
         logo.setPosition((MainGame.SCREEN_WIDTH-logo.getWidth())/2, MainGame.SCREEN_HEIGHT-logo.getHeight());
 
-        Texture ButtonUp = new Texture("Textures/button_up.png");
-        Texture ButtonDown = new Texture("Textures/button_down.png");
+        Texture buttonUp = new Texture("Textures/button_up.png");
+        Texture buttonDown = new Texture("Textures/button_down.png");
         TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
         FileHandle fontFile = Gdx.files.internal("Textures/vag-world-bold.fnt");
         BitmapFont bitmapfont = new BitmapFont(fontFile);
-        buttonStyle.up = new TextureRegionDrawable(ButtonUp);
-        buttonStyle.down = new TextureRegionDrawable(ButtonDown);
+        buttonStyle.up = new TextureRegionDrawable(buttonUp);
+        buttonStyle.down = new TextureRegionDrawable(buttonDown);
         buttonStyle.font = bitmapfont;
 
         TextButton startButton = new TextButton("Играть", buttonStyle);
@@ -117,6 +121,9 @@ public class StartScreen implements Screen {
 
     }
 
+    public ChooseLevelScreen getChooseLevelScreen() {
+        return chooseLevelScreen;
+    }
 
     @Override
     public void render(float delta) {
@@ -146,6 +153,6 @@ public class StartScreen implements Screen {
 
     @Override
     public void dispose() {
-
+        stage.dispose();
     }
 }

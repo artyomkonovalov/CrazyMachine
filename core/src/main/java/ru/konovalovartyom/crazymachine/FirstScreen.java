@@ -143,10 +143,10 @@ public class FirstScreen implements Screen, RotateListener{
         });
 
         ImageButton.ImageButtonStyle backButtonStyle = new ImageButton.ImageButtonStyle();
-        Texture clockwiseNormal = new Texture("Textures/backbutton_normal(wood).png");
-        Texture clockwiseActive = new Texture("Textures/backbutton_active(wood).png");
-        backButtonStyle.up = new TextureRegionDrawable(clockwiseNormal);
-        backButtonStyle.down = new TextureRegionDrawable(clockwiseActive);
+        Texture backButtonNormal = new Texture("Textures/backbutton_normal(wood).png");
+        Texture backButtonActive = new Texture("Textures/backbutton_active(wood).png");
+        backButtonStyle.up = new TextureRegionDrawable(backButtonNormal);
+        backButtonStyle.down = new TextureRegionDrawable(backButtonActive);
         ImageButton backButton = new ImageButton(backButtonStyle);
         backButton.setPosition(0, MainGame.SCREEN_HEIGHT-backButton.getHeight());
         backButton.addListener(new ClickListener(){
@@ -228,7 +228,7 @@ public class FirstScreen implements Screen, RotateListener{
             JsonValue root = new JsonReader().parse(data);
             for(JsonValue entry : root){
                 if(entry.getString("task") != null) {
-                    textTask = entry.getString("task");
+                    textTask = new String(entry.getString("task").getBytes(), StandardCharsets.UTF_8) ;
                 }
                 else{
                     DragAndDropActor actor = new DragAndDropActor(textureMap, stringToThingTypeEnumMap.get(entry.getString("actorType")), inventoryActor, elements, this, entry.get("isNeedToWin").asBoolean(), entry.get("toInventory").asBoolean());
@@ -239,7 +239,7 @@ public class FirstScreen implements Screen, RotateListener{
                     }
                     else{
                         elements.add(actor);
-                        actor.setRotation(entry.get("angle").asInt());
+                        actor.rotation = entry.get("angle").asInt();
                     }
                 }
             }
@@ -300,7 +300,7 @@ public class FirstScreen implements Screen, RotateListener{
         Json json = new Json();
         ArrayList<Object> actors = new ArrayList<>();
         for(DragAndDropActor element:elements){
-            SaveActor saveActor = new SaveActor(element.thingTypeEnum, element.getX(), element.getY(), element.getRotation(), element.NeedToWin, element.toInventory);
+            SaveActor saveActor = new SaveActor(element.thingTypeEnum, element.getX(), element.getY(), element.rotation, element.NeedToWin, element.toInventory);
             actors.add(saveActor);
         }
         FileHandle directory = Gdx.files.local("levels/");
@@ -321,7 +321,7 @@ public class FirstScreen implements Screen, RotateListener{
         String levelName = "level" + date.getTime() + ".json";
         String data = json.prettyPrint(actors);
         System.out.println(data);
-        directory.child(levelName).writeString(data, false);
+        directory.child(levelName).writeString(data, false, "utf-8");
     }
     private int filesCount(){
         int count = 0;
@@ -442,8 +442,9 @@ public class FirstScreen implements Screen, RotateListener{
     @Override
     public void rotate(float degree) {
         if (isSelected != null){
+            isSelected.rotation += degree;
 //            isSelected.setRotation(isSelected.getRotation() + degree);
-            isSelected.rotateBy(degree);
+//            isSelected.rotateBy(degree);
 //            isSelected.setHeight((float) (isSelected.getHeight() + isSelected.getWidth()*Math.sin(isSelected.getRotation())));
 //            isSelected.setWidth((float) (isSelected.getWidth()*Math.cos(isSelected.getRotation())));
         }

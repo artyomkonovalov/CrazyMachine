@@ -1,9 +1,29 @@
 [
 {
 	class: ru.konovalovartyom.crazymachine.SaveActor
+	actorType: PUSHPIN
+	x: 948
+	y: 43.999985
+	angle: 0
+	isNeedToWin: false
+	toInventory: false
+	task: null
+}
+{
+	class: ru.konovalovartyom.crazymachine.SaveActor
+	actorType: PUSHPIN
+	x: 38
+	y: 49.999985
+	angle: 0
+	isNeedToWin: false
+	toInventory: false
+	task: null
+}
+{
+	class: ru.konovalovartyom.crazymachine.SaveActor
 	actorType: BALLOON
-	x: 518
-	y: 184.99997
+	x: 512
+	y: 352.99997
 	angle: 0
 	isNeedToWin: true
 	toInventory: false
@@ -12,31 +32,11 @@
 {
 	class: ru.konovalovartyom.crazymachine.SaveActor
 	actorType: BALL
-	x: 524
-	y: 528.00006
+	x: 514
+	y: 585
 	angle: 0
 	isNeedToWin: false
 	toInventory: true
-	task: null
-}
-{
-	class: ru.konovalovartyom.crazymachine.SaveActor
-	actorType: PUSHPIN
-	x: 994
-	y: 23.000015
-	angle: 0
-	isNeedToWin: false
-	toInventory: false
-	task: null
-}
-{
-	class: ru.konovalovartyom.crazymachine.SaveActor
-	actorType: PUSHPIN
-	x: 29
-	y: 26.99997
-	angle: 0
-	isNeedToWin: false
-	toInventory: false
 	task: null
 }
 {
@@ -47,6 +47,6 @@
 	angle: 0
 	isNeedToWin: false
 	toInventory: false
-	task: Balloon is rising! Let him down!
+	task: "Шарик должен опуститься вниз и пролететь между кнопками"
 }
 ]

@@ -2,9 +2,9 @@
 {
 	class: ru.konovalovartyom.crazymachine.SaveActor
 	actorType: DESK
-	x: 74.86456
-	y: 323.4606
-	angle: -35
+	x: 122
+	y: 290
+	angle: -30
 	isNeedToWin: false
 	toInventory: true
 	task: null
@@ -12,9 +12,9 @@
 {
 	class: ru.konovalovartyom.crazymachine.SaveActor
 	actorType: DESK
-	x: 719.3955
-	y: 324.67273
-	angle: 35
+	x: 655
+	y: 273.99994
+	angle: 30
 	isNeedToWin: false
 	toInventory: true
 	task: null
@@ -23,7 +23,7 @@
 	class: ru.konovalovartyom.crazymachine.SaveActor
 	actorType: BALL
 	x: 811
-	y: 532
+	y: 530.99994
 	angle: 0
 	isNeedToWin: true
 	toInventory: false
@@ -32,8 +32,8 @@
 {
 	class: ru.konovalovartyom.crazymachine.SaveActor
 	actorType: BALL
-	x: 190
-	y: 554.00006
+	x: 110
+	y: 556
 	angle: 0
 	isNeedToWin: true
 	toInventory: false
@@ -42,8 +42,8 @@
 {
 	class: ru.konovalovartyom.crazymachine.SaveActor
 	actorType: PUSHPIN
-	x: 709
-	y: 197.00002
+	x: 628
+	y: 185.99998
 	angle: 0
 	isNeedToWin: false
 	toInventory: false
@@ -52,8 +52,8 @@
 {
 	class: ru.konovalovartyom.crazymachine.SaveActor
 	actorType: PUSHPIN
-	x: 355
-	y: 197
+	x: 401
+	y: 184
 	angle: 0
 	isNeedToWin: false
 	toInventory: false
@@ -67,6 +67,6 @@
 	angle: 0
 	isNeedToWin: false
 	toInventory: false
-	task: Footballs must cross the "finish"
+	task: "Оба мяча должны пройти между кнопками"
 }
 ]

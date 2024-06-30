@@ -82,7 +82,9 @@ public class ChooseLevelScreen implements Screen {
         });
 
         stage.addActor(backButton);
-        stage.addActor(deleteButton);
+        if(fromLocalStorage) {
+            stage.addActor(deleteButton);
+        }
 
         levelReorganization();
     }
@@ -113,6 +115,9 @@ public class ChooseLevelScreen implements Screen {
                     if(isDeleteMod){
                         levels.get(a).getLevelFile().delete();
                         levels.get(a).remove();
+                        for(LevelActor level : levels){
+                            level.remove();
+                        }
                         levelReorganization();
                         switchDeleteMod();
                     }
@@ -159,6 +164,6 @@ public class ChooseLevelScreen implements Screen {
 
     @Override
     public void dispose() {
-
+        stage.dispose();
     }
 }

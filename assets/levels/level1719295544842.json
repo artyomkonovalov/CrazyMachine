@@ -1,52 +1,152 @@
 [
-{
-	class: ru.konovalovartyom.crazymachine.SaveActor
-	actorType: BALLOON
-	x: 504
-	y: 103.99997
-	angle: 0
-	isNeedToWin: true
-	toInventory: false
-	task: null
-}
-{
-	class: ru.konovalovartyom.crazymachine.SaveActor
-	actorType: DESK
-	x: 433
-	y: 387.00003
-	angle: -25
-	isNeedToWin: false
-	toInventory: false
-	task: null
-}
-{
-	class: ru.konovalovartyom.crazymachine.SaveActor
-	actorType: PUSHPIN
-	x: 464
-	y: 457.00006
-	angle: 0
-	isNeedToWin: false
-	toInventory: false
-	task: null
-}
-{
-	class: ru.konovalovartyom.crazymachine.SaveActor
-	actorType: PUSHPIN
-	x: 37
-	y: 473
-	angle: 0
-	isNeedToWin: false
-	toInventory: false
-	task: null
-}
-{
-	class: ru.konovalovartyom.crazymachine.SaveActor
-	actorType: TEXTFIELD
-	x: 0
-	y: 0
-	angle: 0
-	isNeedToWin: false
-	toInventory: false
-	task: �����
-}
+  {
+    class: ru.konovalovartyom.crazymachine.SaveActor
+    actorType: DESK
+    x: 434
+    y: 465
+    angle: 0
+    isNeedToWin: false
+    toInventory: false
+    task: null
+  }
+  {
+    class: ru.konovalovartyom.crazymachine.SaveActor
+    actorType: DOMINO
+    x: 451
+    y: 494.99997
+    angle: 0
+    isNeedToWin: false
+    toInventory: false
+    task: null
+  }
+  {
+    class: ru.konovalovartyom.crazymachine.SaveActor
+    actorType: DOMINO
+    x: 526
+    y: 493.00015
+    angle: 0
+    isNeedToWin: false
+    toInventory: false
+    task: null
+  }
+  {
+    class: ru.konovalovartyom.crazymachine.SaveActor
+    actorType: DOMINO
+    x: 601
+    y: 492.9999
+    angle: 0
+    isNeedToWin: false
+    toInventory: false
+    task: null
+  }
+  {
+    class: ru.konovalovartyom.crazymachine.SaveActor
+    actorType: BALL
+    x: 650
+    y: 494.99994
+    angle: 0
+    isNeedToWin: false
+    toInventory: false
+    task: null
+  }
+  {
+    class: ru.konovalovartyom.crazymachine.SaveActor
+    actorType: FAN
+    x: 89
+    y: 436
+    angle: 0
+    isNeedToWin: false
+    toInventory: false
+    task: null
+  }
+  {
+    class: ru.konovalovartyom.crazymachine.SaveActor
+    actorType: DESK
+    x: 847.6889
+    y: 349.01254
+    angle: 90
+    isNeedToWin: false
+    toInventory: false
+    task: null
+  }
+  {
+    class: ru.konovalovartyom.crazymachine.SaveActor
+    actorType: DESK
+    x: 728.4959
+    y: 157.13748
+    angle: 25
+    isNeedToWin: false
+    toInventory: false
+    task: null
+  }
+  {
+    class: ru.konovalovartyom.crazymachine.SaveActor
+    actorType: DESK
+    x: 430
+    y: 265.99997
+    angle: 0
+    isNeedToWin: false
+    toInventory: false
+    task: null
+  }
+  {
+    class: ru.konovalovartyom.crazymachine.SaveActor
+    actorType: BALLOON
+    x: 614
+    y: 129
+    angle: 0
+    isNeedToWin: true
+    toInventory: false
+    task: null
+  }
+  {
+    class: ru.konovalovartyom.crazymachine.SaveActor
+    actorType: DESK
+    x: 86
+    y: 161.99998
+    angle: 90
+    isNeedToWin: false
+    toInventory: false
+    task: null
+  }
+  {
+    class: ru.konovalovartyom.crazymachine.SaveActor
+    actorType: FAN
+    x: 30
+    y: 86
+    angle: 0
+    isNeedToWin: false
+    toInventory: false
+    task: null
+  }
+  {
+    class: ru.konovalovartyom.crazymachine.SaveActor
+    actorType: PUSHPIN
+    x: 474
+    y: 391
+    angle: 0
+    isNeedToWin: false
+    toInventory: false
+    task: null
+  }
+  {
+    class: ru.konovalovartyom.crazymachine.SaveActor
+    actorType: PUSHPIN
+    x: 111
+    y: 385
+    angle: 0
+    isNeedToWin: false
+    toInventory: false
+    task: null
+  }
+  {
+    class: ru.konovalovartyom.crazymachine.SaveActor
+    actorType: TEXTFIELD
+    x: 0
+    y: 0
+    angle: 0
+    isNeedToWin: false
+    toInventory: false,
+    task: "Нажмите на кнопку \"Запуск уровня\"\n<-- Задание можно скрыть, нажав на эту кнопку"
+  }
 ]

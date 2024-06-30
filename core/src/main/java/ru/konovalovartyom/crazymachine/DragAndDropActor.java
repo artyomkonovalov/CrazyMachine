@@ -16,6 +16,7 @@ public class DragAndDropActor extends Actor {
     public TextureRegion textureRegion;
     public FirstScreen screen;
     public ThingTypeEnum thingTypeEnum;
+    public int rotation = 0;
     public boolean NeedToWin;
     public boolean toInventory;
     public DragAndDropActor(Map<ThingTypeEnum, TextureRegion> textureRegionMap, ThingTypeEnum thingTypeEnum, InventoryActor inventory, Set<DragAndDropActor> elements, FirstScreen firstScreen) {
@@ -149,7 +150,7 @@ public class DragAndDropActor extends Actor {
             getHeight(),
             getScaleX(),
             getScaleY(),
-            getRotation()
+            rotation
         );
     }
 }

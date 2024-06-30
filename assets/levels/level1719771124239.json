@@ -1,9 +1,9 @@
 [
 {
 	class: ru.konovalovartyom.crazymachine.SaveActor
-	actorType: DESK
-	x: 313
-	y: 443
+	actorType: FAN
+	x: 47
+	y: 28.999985
 	angle: 0
 	isNeedToWin: false
 	toInventory: false
@@ -12,18 +12,38 @@
 {
 	class: ru.konovalovartyom.crazymachine.SaveActor
 	actorType: FAN
-	x: 102
-	y: 422.00012
+	x: 37
+	y: 202.00002
 	angle: 0
+	isNeedToWin: false
+	toInventory: false
+	task: null
+}
+{
+	class: ru.konovalovartyom.crazymachine.SaveActor
+	actorType: FAN
+	x: 39
+	y: 378
+	angle: 0
+	isNeedToWin: false
+	toInventory: false
+	task: null
+}
+{
+	class: ru.konovalovartyom.crazymachine.SaveActor
+	actorType: DESK
+	x: 257
+	y: 210.99991
+	angle: 90
 	isNeedToWin: false
 	toInventory: true
 	task: null
 }
 {
 	class: ru.konovalovartyom.crazymachine.SaveActor
-	actorType: BALL
-	x: 398
-	y: 492
+	actorType: BALLOON
+	x: 643
+	y: 43.99997
 	angle: 0
 	isNeedToWin: true
 	toInventory: false
@@ -31,19 +51,9 @@
 }
 {
 	class: ru.konovalovartyom.crazymachine.SaveActor
-	actorType: DESK
-	x: 696
-	y: 326.99997
-	angle: 35
-	isNeedToWin: false
-	toInventory: true
-	task: null
-}
-{
-	class: ru.konovalovartyom.crazymachine.SaveActor
 	actorType: PUSHPIN
-	x: 584
-	y: 55.999985
+	x: 970
+	y: 616.00006
 	angle: 0
 	isNeedToWin: false
 	toInventory: false
@@ -52,8 +62,8 @@
 {
 	class: ru.konovalovartyom.crazymachine.SaveActor
 	actorType: PUSHPIN
-	x: 232
-	y: 324
+	x: 73
+	y: 626.00006
 	angle: 0
 	isNeedToWin: false
 	toInventory: false
@@ -67,6 +77,6 @@
 	angle: 0
 	isNeedToWin: false
 	toInventory: false
-	task: Football must pass between pushpins
+	task: "Дайте шарику пролететь между кнопками"
 }
 ]

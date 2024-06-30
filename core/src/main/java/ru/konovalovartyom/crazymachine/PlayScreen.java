@@ -112,7 +112,7 @@ public class PlayScreen implements Screen {
             createBodies(element);
         }
         createFinishLine();
-        winActor = new WinActor(startScreen, game, firstScreen);
+        winActor = new WinActor(startScreen.getChooseLevelScreen(), game, firstScreen);
         stage.addActor(winActor);
         winActor.setVisible(false);
     }
@@ -184,7 +184,7 @@ public class PlayScreen implements Screen {
         PolygonShape shape = new PolygonShape();
         shape.setAsBox(element.getWidth()/(2*PPM), element.getHeight()/(2*PPM));
 
-        body.setTransform((element.getX() + element.getWidth()/2)/PPM, (element.getY() + element.getHeight()/2)/PPM, element.getRotation()*3.14F/180);
+        body.setTransform((element.getX() + element.getWidth()/2)/PPM, (element.getY() + element.getHeight()/2)/PPM, element.rotation*3.14F/180);
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
@@ -233,7 +233,7 @@ public class PlayScreen implements Screen {
         PolygonShape shape = new PolygonShape();
         shape.setAsBox(element.getWidth()/(2*PPM), element.getHeight()/(2*PPM));
 
-        body.setTransform((element.getX() + element.getWidth()/2)/PPM, (element.getY() + element.getHeight()/2)/PPM, element.getRotation()*3.14F/180);
+        body.setTransform((element.getX() + element.getWidth()/2)/PPM, (element.getY() + element.getHeight()/2)/PPM, element.rotation*3.14F/180);
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
@@ -259,7 +259,7 @@ public class PlayScreen implements Screen {
         PolygonShape shape = new PolygonShape();
         shape.setAsBox(element.getWidth()*2/PPM, element.getHeight()/(4F*PPM), new Vector2(2*element.getWidth()/PPM, element.getHeight()/PPM-2*element.getHeight()/(2.5F*PPM)), 0);
 
-        body.setTransform((element.getX() + element.getWidth()/2)/PPM, (element.getY() + element.getHeight()/2)/PPM, element.getRotation()*3.14F/180);
+        body.setTransform((element.getX() + element.getWidth()/2)/PPM, (element.getY() + element.getHeight()/2)/PPM, element.rotation*3.14F/180);
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
@@ -412,6 +412,7 @@ public class PlayScreen implements Screen {
 
     @Override
     public void dispose() {
+        stage.dispose();
     }
 
     private class MyContactListener implements ContactListener {

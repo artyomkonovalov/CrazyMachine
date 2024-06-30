@@ -1,19 +1,9 @@
 [
 {
 	class: ru.konovalovartyom.crazymachine.SaveActor
-	actorType: DOMINO
-	x: 349.62332
-	y: 93.326355
-	angle: 0
-	isNeedToWin: false
-	toInventory: false
-	task: null
-}
-{
-	class: ru.konovalovartyom.crazymachine.SaveActor
-	actorType: FAN
-	x: 27.11145
-	y: 38.012543
+	actorType: DESK
+	x: 444
+	y: 306
 	angle: 0
 	isNeedToWin: false
 	toInventory: false
@@ -22,68 +12,18 @@
 {
 	class: ru.konovalovartyom.crazymachine.SaveActor
 	actorType: DESK
-	x: 243.12402
-	y: 56.25522
-	angle: 0
-	isNeedToWin: false
-	toInventory: false
-	task: null
-}
-{
-	class: ru.konovalovartyom.crazymachine.SaveActor
-	actorType: DOMINO
-	x: 430
-	y: 95.33473
-	angle: 0
+	x: 826
+	y: 164.99998
+	angle: -90
 	isNeedToWin: false
 	toInventory: true
-	task: null
-}
-{
-	class: ru.konovalovartyom.crazymachine.SaveActor
-	actorType: DOMINO
-	x: 511.38147
-	y: 101.35982
-	angle: 0
-	isNeedToWin: false
-	toInventory: true
-	task: null
-}
-{
-	class: ru.konovalovartyom.crazymachine.SaveActor
-	actorType: DOMINO
-	x: 595.77704
-	y: 96.33888
-	angle: 0
-	isNeedToWin: false
-	toInventory: true
-	task: null
-}
-{
-	class: ru.konovalovartyom.crazymachine.SaveActor
-	actorType: DESK
-	x: 541.5227
-	y: 57.25937
-	angle: 0
-	isNeedToWin: false
-	toInventory: true
-	task: null
-}
-{
-	class: ru.konovalovartyom.crazymachine.SaveActor
-	actorType: DESK
-	x: 483.2495
-	y: 218.93301
-	angle: 0
-	isNeedToWin: false
-	toInventory: false
 	task: null
 }
 {
 	class: ru.konovalovartyom.crazymachine.SaveActor
 	actorType: BALLOON
-	x: 650.0313
-	y: 100.8996
+	x: 540
+	y: 197.99995
 	angle: 0
 	isNeedToWin: true
 	toInventory: false
@@ -91,19 +31,49 @@
 }
 {
 	class: ru.konovalovartyom.crazymachine.SaveActor
-	actorType: DESK
-	x: 847.00116
-	y: 173.94095
-	angle: -90
+	actorType: FAN
+	x: 65
+	y: 30
+	angle: 0
 	isNeedToWin: false
 	toInventory: false
 	task: null
 }
 {
 	class: ru.konovalovartyom.crazymachine.SaveActor
+	actorType: DESK
+	x: 344
+	y: 88.99994
+	angle: 0
+	isNeedToWin: false
+	toInventory: true
+	task: null
+}
+{
+	class: ru.konovalovartyom.crazymachine.SaveActor
+	actorType: DOMINO
+	x: 515
+	y: 117
+	angle: 0
+	isNeedToWin: false
+	toInventory: true
+	task: null
+}
+{
+	class: ru.konovalovartyom.crazymachine.SaveActor
+	actorType: DOMINO
+	x: 418
+	y: 114.999985
+	angle: 0
+	isNeedToWin: false
+	toInventory: true
+	task: null
+}
+{
+	class: ru.konovalovartyom.crazymachine.SaveActor
 	actorType: PUSHPIN
-	x: 1005.6987
-	y: 667.97076
+	x: 989
+	y: 655
 	angle: 0
 	isNeedToWin: false
 	toInventory: false
@@ -112,8 +82,8 @@
 {
 	class: ru.konovalovartyom.crazymachine.SaveActor
 	actorType: PUSHPIN
-	x: 734.427
-	y: 652.90796
+	x: 525
+	y: 642
 	angle: 0
 	isNeedToWin: false
 	toInventory: false
@@ -126,7 +96,7 @@
 	y: 0
 	angle: 0
 	isNeedToWin: false
-	toInventory: false,
-	task: Сontinue the line of dominoes
+	toInventory: false
+	task: "Воздушный шарик должен пролететь между кнопками"
 }
 ]

@@ -1,49 +1,69 @@
 [
 {
 	class: ru.konovalovartyom.crazymachine.SaveActor
+	actorType: DESK
+	x: -8
+	y: 347
+	angle: 0
+	isNeedToWin: false
+	toInventory: false
+	task: null
+}
+{
+	class: ru.konovalovartyom.crazymachine.SaveActor
+	actorType: DESK
+	x: 524
+	y: 351
+	angle: 0
+	isNeedToWin: false
+	toInventory: false
+	task: null
+}
+{
+	class: ru.konovalovartyom.crazymachine.SaveActor
+	actorType: DESK
+	x: 767
+	y: 349.99997
+	angle: 0
+	isNeedToWin: false
+	toInventory: false
+	task: null
+}
+{
+	class: ru.konovalovartyom.crazymachine.SaveActor
+	actorType: FAN
+	x: 128
+	y: 377.00006
+	angle: 0
+	isNeedToWin: false
+	toInventory: true
+	task: null
+}
+{
+	class: ru.konovalovartyom.crazymachine.SaveActor
+	actorType: PUSHPIN
+	x: 997
+	y: 488.00006
+	angle: 0
+	isNeedToWin: false
+	toInventory: false
+	task: null
+}
+{
+	class: ru.konovalovartyom.crazymachine.SaveActor
+	actorType: PUSHPIN
+	x: 418
+	y: 685
+	angle: 0
+	isNeedToWin: false
+	toInventory: false
+	task: null
+}
+{
+	class: ru.konovalovartyom.crazymachine.SaveActor
 	actorType: BALLOON
-	x: 239
-	y: 20.000061
-	angle: 0
-	isNeedToWin: false
-	toInventory: true
-	task: null
-}
-{
-	class: ru.konovalovartyom.crazymachine.SaveActor
-	actorType: DESK
-	x: 139.06326
-	y: 252.43057
-	angle: 25
-	isNeedToWin: false
-	toInventory: false
-	task: null
-}
-{
-	class: ru.konovalovartyom.crazymachine.SaveActor
-	actorType: DESK
-	x: 417
-	y: 312.99997
-	angle: 0
-	isNeedToWin: false
-	toInventory: true
-	task: null
-}
-{
-	class: ru.konovalovartyom.crazymachine.SaveActor
-	actorType: DESK
-	x: 653.211
-	y: 429.69153
-	angle: 60
-	isNeedToWin: false
-	toInventory: false
-	task: null
-}
-{
-	class: ru.konovalovartyom.crazymachine.SaveActor
-	actorType: BALL
-	x: 830
-	y: 603.99994
+	x: 678
+	y: 7.9999695
 	angle: 0
 	isNeedToWin: true
 	toInventory: false
@@ -51,42 +71,12 @@
 }
 {
 	class: ru.konovalovartyom.crazymachine.SaveActor
-	actorType: PUSHPIN
-	x: 14
-	y: 12.9999695
-	angle: 0
-	isNeedToWin: false
-	toInventory: false
-	task: null
-}
-{
-	class: ru.konovalovartyom.crazymachine.SaveActor
-	actorType: PUSHPIN
-	x: 24
-	y: 499.00006
-	angle: 0
-	isNeedToWin: false
-	toInventory: false
-	task: null
-}
-{
-	class: ru.konovalovartyom.crazymachine.SaveActor
 	actorType: DESK
-	x: 866
-	y: 395
-	angle: 90
+	x: 591
+	y: 245.99997
+	angle: -20
 	isNeedToWin: false
-	toInventory: false
-	task: null
-}
-{
-	class: ru.konovalovartyom.crazymachine.SaveActor
-	actorType: DESK
-	x: 589
-	y: 579.99994
-	angle: 0
-	isNeedToWin: false
-	toInventory: false
+	toInventory: true
 	task: null
 }
 {
@@ -97,6 +87,6 @@
 	angle: 0
 	isNeedToWin: false
 	toInventory: false
-	task: Ball must pass between the pushpins
+	task: "Помогите шарику пролететь между кнопками"
 }
 ]
